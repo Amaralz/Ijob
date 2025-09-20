@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroComponent extends StatelessWidget {
   final cpfFormatter = MaskTextInputFormatter(mask: '###.###.###-##');
   final celularFormatter = MaskTextInputFormatter(mask: '(##) #####-####');
 
+  final TextEditingController servicoController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController bairroController = TextEditingController();
@@ -22,29 +22,39 @@ class CadastroComponent extends StatelessWidget {
         child: ListView(
           children: [
             TextField(
+              controller: servicoController,
+              decoration: InputDecoration(labelText: 'Serviço'),
+            ),
+            SizedBox(height: 50),
+            TextField(
               controller: cpfController,
               inputFormatters: [cpfFormatter],
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: 'CPF'),
             ),
+            SizedBox(height: 50),
             TextField(
               controller: nomeController,
               decoration: InputDecoration(labelText: 'Nome'),
             ),
+            SizedBox(height: 50),
             TextField(
               controller: bairroController,
               decoration: InputDecoration(labelText: 'Bairro'),
             ),
+            SizedBox(height: 50),
             TextField(
               controller: generoController,
               decoration: InputDecoration(labelText: 'Gênero'),
             ),
+            SizedBox(height: 50),
             TextField(
               controller: celularController,
               inputFormatters: [celularFormatter],
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(labelText: 'Celular'),
             ),
+            SizedBox(height: 50),
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,

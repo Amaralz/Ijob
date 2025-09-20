@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
+//import 'package:ijob/pages/home_page.dart';
 import 'components/login_component.dart';
 import 'components/cadastro_component.dart';
+import 'pages/home_page.dart';
 
 void main() {
   runApp(
     MaterialApp(
       title: 'App de Cadastro',
+
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.blue,
+      ),
+
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
+      themeMode: ThemeMode.system,
+
       initialRoute: '/',
       routes: {
         '/': (context) => LoginComponent(),
         '/cadastro': (context) => CadastroComponent(),
+        '/homepage': (context) => HomePage(),
       },
     ),
   );
