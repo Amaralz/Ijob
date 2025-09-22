@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ijob/pages/notificacao_page.dart';
 import 'package:ijob/pages/servicos_page.dart';
 //import 'package:ijob/pages/home_page.dart';
-import 'components/login_component.dart';
-import 'components/cadastro_component.dart';
+import 'pages/login_component.dart';
+import 'pages/cadastro_component.dart';
 import 'pages/home_page.dart';
 
 void main() {
