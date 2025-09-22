@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/components/side_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,10 +14,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Homepage'),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(228, 23, 225, 239),
         automaticallyImplyLeading: true,
       ),
-      drawer: Drawer(), //adicionar lugares para navegar futuramente
+      drawer: const Sidebar(), //adicionar lugares para navegar futuramente
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(

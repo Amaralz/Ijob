@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/pages/notificacao_page.dart';
+import 'package:ijob/pages/servicos_page.dart';
 //import 'package:ijob/pages/home_page.dart';
 import 'components/login_component.dart';
 import 'components/cadastro_component.dart';
@@ -25,6 +27,8 @@ void main() {
         '/': (context) => LoginComponent(),
         '/cadastro': (context) => CadastroComponent(),
         '/homepage': (context) => HomePage(),
+        '/servicos': (context) => ServicosPage(),
+        '/notificacao': (context) => NotificacaoPage(),
       },
     ),
   );
