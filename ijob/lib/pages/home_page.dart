@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Categor> _categories = [
+  final List<Categor> categories = [
     Categor(id: '1', name: "Eletricista", icon: Icons.electric_bolt_outlined),
     Categor(id: '2', name: "Pintura", icon: Icons.format_paint),
     Categor(id: '3', name: "Encanação", icon: Icons.bathroom),
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     Categor(id: '6', name: "Mudança", icon: Icons.fire_truck_sharp),
   ];
 
-  final List<Servicer> _services = [
+  final List<Servicer> services = [
     Servicer(
       id: '1',
       nome: 'Jorge',
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
-  _test(String objeto) {}
+  test(String objeto) {}
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +47,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           spacing: 20,
           children: <Widget>[
-            Container(width: double.maxFinite, child: topBarPrimaryPage(_test)),
-            Middleprimarypage(_categories, _services),
+            Container(width: double.maxFinite, child: topBarPrimaryPage(test)),
+            Middleprimarypage(categories, services),
           ],
         ),
       ),

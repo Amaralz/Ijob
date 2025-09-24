@@ -70,7 +70,7 @@ class _SidebarState extends State<Sidebar> {
           //botão serviços
           ListTile(
             leading: const Icon(Icons.build),
-            title: const Text('serviços'),
+            title: const Text('Serviços'),
             selected: _selectedIndex == 1,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 1, '/servicos'),
@@ -79,7 +79,7 @@ class _SidebarState extends State<Sidebar> {
           //botão notificação
           ListTile(
             leading: const Icon(Icons.add_alert),
-            title: const Text('notificações'),
+            title: const Text('Notificações'),
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 2, '/notificacao'),

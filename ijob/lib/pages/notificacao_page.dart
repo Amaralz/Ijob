@@ -9,7 +9,7 @@ class NotificacaoPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notificações'),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.blue,
         centerTitle: true,
       ),
       drawer: Sidebar(),
