@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/components/side_bar.dart';
+import 'package:ijob/Components/side_bar.dart';
 
 class ServicosPage extends StatefulWidget {
   const ServicosPage({super.key});

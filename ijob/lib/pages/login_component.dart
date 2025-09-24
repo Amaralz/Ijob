@@ -28,50 +28,54 @@ class _LoginComponentState extends State<LoginComponent> {
       appBar: AppBar(title: const Text(''), centerTitle: true), //iperson
       body: Padding(
         padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.asset(
-              'assets/images/trabalhadores.png',
-              height: 120,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-            SizedBox(height: 40),
-            Text(
-              'LOGIN',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Image.asset(
+                'assets/images/trabalhadores.png',
+                height: 120,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              SizedBox(height: 40),
+              Text(
+                'LOGIN',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
 
-            TextField(
-              controller: usuarioController,
-              decoration: const InputDecoration(labelText: 'Usuário'),
-            ),
-            TextField(
-              controller: senhaController,
-              decoration: const InputDecoration(labelText: 'Senha'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
+              TextField(
+                controller: usuarioController,
+                decoration: const InputDecoration(labelText: 'Usuário'),
+                onSubmitted: (_) => _login(),
+              ),
+              TextField(
+                controller: senhaController,
+                decoration: const InputDecoration(labelText: 'Senha'),
+                obscureText: true,
+                onSubmitted: (_) => _login(),
+              ),
+              SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: () {
-                _login();
-              },
-              child: Text('Enviar'),
-            ),
+              ElevatedButton(
+                onPressed: () {
+                  _login();
+                },
+                child: Text('Enviar'),
+              ),
 
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/cadastro');
-              },
-              child: Text('Não sou cadastrado'),
-            ),
-          ],
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/cadastro');
+                },
+                child: Text('Não sou cadastrado'),
+              ),
+            ],
+          ),
         ),
       ),
     );
