@@ -29,26 +29,91 @@ class _HomePageState extends State<HomePage> {
       url:
           "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
     ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
+    Servicer(
+      id: '1',
+      nome: 'Jorge',
+      category: Categor(id: '1', name: "Eletricista"),
+      url:
+          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+    ),
   ];
 
   test(String objeto) {}
 
   @override
   Widget build(BuildContext context) {
+    final appbar = AppBar(
+      title: const Text('Ijob'),
+      centerTitle: true,
+      backgroundColor: Colors.blue,
+      automaticallyImplyLeading: true,
+    );
+
+    final availableHeight =
+        MediaQuery.of(context).size.height -
+        appbar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ijob'),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        automaticallyImplyLeading: true,
-      ),
+      appBar: appbar,
       drawer: const Sidebar(), //adicionar lugares para navegar futuramente
       body: SingleChildScrollView(
         child: Column(
-          spacing: 20,
           children: <Widget>[
-            Container(width: double.maxFinite, child: topBarPrimaryPage(test)),
-            Middleprimarypage(categories, services),
+            Container(
+              height: availableHeight * 0.3,
+              width: double.maxFinite,
+              child: topBarPrimaryPage(test),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Container(
+                height: availableHeight * 1,
+                child: Middleprimarypage(categories, services),
+              ),
+            ),
           ],
         ),
       ),

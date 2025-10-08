@@ -23,7 +23,6 @@ class Middleprimarypage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 800,
       width: double.maxFinite,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

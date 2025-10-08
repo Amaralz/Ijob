@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Components/textFieldcadastro.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CadastroComponent extends StatelessWidget {
@@ -16,56 +17,44 @@ class CadastroComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Cadastro')),
+      appBar: AppBar(title: const Text('Cadastro')),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: ListView(
-          children: [
-            TextField(
-              controller: servicoController,
-              decoration: InputDecoration(labelText: 'Serviço'),
-            ),
+          children: <Widget>[
+            Textfieldcadastro(controller: servicoController, label: "Serviço"),
             SizedBox(height: 50),
-            TextField(
+            Textfieldcadastro(
               controller: cpfController,
-              inputFormatters: [cpfFormatter],
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'CPF'),
+              mask: [cpfFormatter],
+              type: TextInputType.number,
+              label: "CPF",
             ),
             SizedBox(height: 50),
-            TextField(
-              controller: nomeController,
-              decoration: InputDecoration(labelText: 'Nome'),
-            ),
+            Textfieldcadastro(controller: nomeController, label: "Nome"),
             SizedBox(height: 50),
-            TextField(
-              controller: bairroController,
-              decoration: InputDecoration(labelText: 'Bairro'),
-            ),
+            Textfieldcadastro(controller: bairroController, label: "Bairro"),
             SizedBox(height: 50),
-            TextField(
-              controller: generoController,
-              decoration: InputDecoration(labelText: 'Gênero'),
-            ),
+            Textfieldcadastro(controller: generoController, label: "Gênero"),
             SizedBox(height: 50),
-            TextField(
+            Textfieldcadastro(
               controller: celularController,
-              inputFormatters: [celularFormatter],
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(labelText: 'Celular'),
+              label: "Celular",
+              mask: [celularFormatter],
+              type: TextInputType.phone,
             ),
             SizedBox(height: 50),
-            TextField(
+            Textfieldcadastro(
               controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(labelText: 'Email'),
+              label: "Email",
+              type: TextInputType.emailAddress,
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // lógica de cadastro
               },
-              child: Text('Cadastrar'),
+              child: const Text('Cadastrar'),
             ),
           ],
         ),
