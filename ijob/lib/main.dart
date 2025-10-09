@@ -4,6 +4,8 @@ import 'package:ijob/pages/servicos_page.dart';
 import 'pages/login_component.dart';
 import 'pages/cadastro_component.dart';
 import 'pages/home_page.dart';
+import 'pages/servicosFiltrados_page.dart';
+import 'utils/routes.dart';
 
 void main() {
   runApp(
@@ -23,11 +25,12 @@ void main() {
 
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginComponent(),
-        '/cadastro': (context) => CadastroComponent(),
-        '/homepage': (context) => HomePage(),
-        '/servicos': (context) => ServicosPage(),
-        '/notificacao': (context) => NotificacaoPage(),
+        Routes.LOGIN: (context) => LoginComponent(),
+        Routes.CADASTRO: (context) => CadastroComponent(),
+        Routes.HOME: (context) => HomePage(),
+        Routes.SERVICOS: (context) => ServicosPage(),
+        Routes.NOTIFICACOES: (context) => NotificacaoPage(),
+        Routes.SERVICOSFILTRADOS: (context) => ServicosfiltradosPage(),
       },
     ),
   );

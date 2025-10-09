@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Components/searchBar.dart';
 
 class barSearchPrimaryPage extends StatefulWidget {
   final void Function(String) _funct;
@@ -12,6 +13,10 @@ class barSearchPrimaryPage extends StatefulWidget {
 class _SearchbarState extends State<barSearchPrimaryPage> {
   final _searchController = TextEditingController();
 
+  // void _selected(String search) {
+  //   Navigator.of(context).popAndPushNamed(Routes.SERVICOS, arguments: search);
+  // }
+
   _pressed() {
     final searchText = _searchController.text;
 
@@ -24,30 +29,6 @@ class _SearchbarState extends State<barSearchPrimaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 370,
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(10),
-        ),
-        child: TextField(
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20,
-            ),
-            border: InputBorder.none,
-            hintText: "Pesquisar",
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: _pressed,
-            ),
-          ),
-          controller: _searchController,
-          onSubmitted: (_) => _pressed(),
-        ),
-      ),
-    );
+    return Searchbar(controller: _searchController, pressed: _pressed());
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Entities/categor.dart';
+import 'package:ijob/utils/routes.dart';
 
 class Categorygridtile extends StatelessWidget {
   final Categor? categoria;
@@ -12,7 +13,9 @@ class Categorygridtile extends StatelessWidget {
     return Card(
       elevation: 1,
       child: ElevatedButton(
-        onPressed: () => (),
+        onPressed: () => Navigator.of(
+          context,
+        ).pushNamed(Routes.SERVICOSFILTRADOS, arguments: categoria),
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(2),
           shape: RoundedRectangleBorder(

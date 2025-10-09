@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/utils/routes.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
@@ -20,6 +21,10 @@ class _SidebarState extends State<Sidebar> {
       Navigator.pop(context);
       Navigator.pushReplacementNamed(context, route);
     }
+  }
+
+  void _selected(String rota) {
+    Navigator.of(context).popAndPushNamed(rota);
   }
 
   @override
@@ -48,10 +53,10 @@ class _SidebarState extends State<Sidebar> {
           const UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
             accountName: Text(
-              'Lael Amaral',
+              'User',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            accountEmail: Text("lael.amaral@gmail.com"),
+            accountEmail: Text("email@gmail.com"),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: Colors.blue),
@@ -64,7 +69,7 @@ class _SidebarState extends State<Sidebar> {
             title: const Text("Home"),
             selected: _selectedIndex == 0,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 0, '/homepage'),
+            onTap: () => _navigateAndSelect(context, 0, Routes.HOME),
           ),
 
           //botão serviços
@@ -73,7 +78,7 @@ class _SidebarState extends State<Sidebar> {
             title: const Text('Serviços'),
             selected: _selectedIndex == 1,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 1, '/servicos'),
+            onTap: () => _selected(Routes.SERVICOS),
           ),
 
           //botão notificação
@@ -82,7 +87,7 @@ class _SidebarState extends State<Sidebar> {
             title: const Text('Notificações'),
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 2, '/notificacao'),
+            onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
           ),
         ],
       ),
