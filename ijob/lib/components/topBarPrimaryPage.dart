@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Components/barSearchPrimaryPage.dart';
 
 class topBarPrimaryPage extends StatelessWidget {
-  final void Function(String) _funct;
-
-  topBarPrimaryPage(this._funct);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,7 +42,6 @@ class topBarPrimaryPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                barSearchPrimaryPage(_funct),
               ],
             ),
           ),

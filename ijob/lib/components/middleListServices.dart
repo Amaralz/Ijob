@@ -11,9 +11,10 @@ class Middlelistservices extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      padding: EdgeInsets.symmetric(vertical: 8),
+
       height: 300,
       child: ListView.builder(
+        padding: const EdgeInsets.all(8),
         itemCount: servicers.length,
         itemBuilder: (ctx, index) {
           final servicer = servicers[index];

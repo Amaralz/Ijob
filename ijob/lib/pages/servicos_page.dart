@@ -1,50 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/barSearchPrimaryPage.dart';
-//import 'package:ijob/Components/side_bar.dart';
-import 'package:ijob/Entities/categor.dart';
 import 'package:ijob/Entities/servicer.dart';
 import 'package:ijob/Components/middleListServices.dart';
+import 'package:ijob/Entities/servicerList.dart';
+import 'package:provider/provider.dart';
 
-class ServicosPage extends StatefulWidget {
-  @override
-  State<ServicosPage> createState() => _ServicosPageState();
-}
-
-class _ServicosPageState extends State<ServicosPage> {
-  final List<Servicer> services = [
-    Servicer(
-      id: '1',
-      nome: 'Jorge',
-      category: Categor(id: '1', name: "Eletricista"),
-      url:
-          "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
-    ),
-  ];
-
-  test(String objeto) {}
-
+class ServicosPage extends StatelessWidget {
+  void test(String string) {}
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<Servicerlist>(context, listen: false);
+    List<Servicer> services = provider.servicers;
+
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Serviços'),
-        backgroundColor: Colors.blue,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          spacing: 20,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Container(
-                width: double.maxFinite,
-                child: barSearchPrimaryPage(test),
-              ),
-            ),
-            Middlelistservices(services),
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          Container(width: double.maxFinite, child: barSearchPrimaryPage(test)),
+          Expanded(child: Middlelistservices(services)),
+        ],
       ),
     );
   }

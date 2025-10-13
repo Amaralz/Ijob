@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:ijob/Entities/categor.dart';
 
-class Servicer {
+class Servicer extends ChangeNotifier {
   final String? id;
   final String? nome;
   final String? url;

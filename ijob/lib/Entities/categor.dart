@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-class Categor {
+class Categor extends ChangeNotifier {
   final String? id;
   final String? name;
   final IconData? icon;

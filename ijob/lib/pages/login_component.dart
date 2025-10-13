@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/utils/routes.dart';
 
 class LoginComponent extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _LoginComponentState extends State<LoginComponent> {
     String senha = senhaController.text;
 
     if (usuario == 'admin' && senha == '123') {
-      Navigator.pushNamed(context, '/homepage');
+      Navigator.pushNamed(context, Routes.HOME);
     } else {
       ScaffoldMessenger.of(
         context,

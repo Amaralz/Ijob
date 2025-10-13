@@ -23,10 +23,6 @@ class _SidebarState extends State<Sidebar> {
     }
   }
 
-  void _selected(String rota) {
-    Navigator.of(context).popAndPushNamed(rota);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -35,8 +31,6 @@ class _SidebarState extends State<Sidebar> {
       setState(() {
         if (currentRoute == '/homepage') {
           _selectedIndex = 0;
-        } else if (currentRoute == '/servicos') {
-          _selectedIndex = 1;
         } else if (currentRoute == '/notificacao') {
           _selectedIndex = 2;
         }
@@ -70,15 +64,6 @@ class _SidebarState extends State<Sidebar> {
             selected: _selectedIndex == 0,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 0, Routes.HOME),
-          ),
-
-          //botão serviços
-          ListTile(
-            leading: const Icon(Icons.build),
-            title: const Text('Serviços'),
-            selected: _selectedIndex == 1,
-            selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _selected(Routes.SERVICOS),
           ),
 
           //botão notificação
