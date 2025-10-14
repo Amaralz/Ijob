@@ -54,4 +54,53 @@ final DummyServicer = [
     url:
         "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
   ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
+  Servicer(
+    id: '7',
+    nome: 'Matheus',
+    category: Categor(id: '3', name: "Encanação"),
+    url:
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
+  ),
 ];

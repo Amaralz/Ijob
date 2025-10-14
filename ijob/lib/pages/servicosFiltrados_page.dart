@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Components/barSearchPrimaryPage.dart';
 import 'package:ijob/Components/middleListServices.dart';
 import 'package:ijob/Entities/categor.dart';
 import 'package:ijob/Entities/servicer.dart';
@@ -18,9 +19,13 @@ class ServicosfiltradosPage extends StatelessWidget {
         title: Text(categoria.name.toString()),
         backgroundColor: Colors.blue,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
-          children: <Widget>[Container(child: Middlelistservices(servicers))],
+          children: <Widget>[
+            barSearchPrimaryPage(),
+            Expanded(child: Middlelistservices(servicers)),
+          ],
         ),
       ),
     );

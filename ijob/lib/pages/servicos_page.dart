@@ -13,11 +13,14 @@ class ServicosPage extends StatelessWidget {
     List<Servicer> services = provider.servicers;
 
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Container(width: double.maxFinite, child: barSearchPrimaryPage(test)),
-          Expanded(child: Middlelistservices(services)),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Column(
+          children: <Widget>[
+            barSearchPrimaryPage(),
+            Expanded(child: Middlelistservices(services)),
+          ],
+        ),
       ),
     );
   }

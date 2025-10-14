@@ -29,9 +29,11 @@ class _SidebarState extends State<Sidebar> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentRoute = ModalRoute.of(context)?.settings.name;
       setState(() {
-        if (currentRoute == '/homepage') {
+        if (currentRoute == Routes.HOME) {
           _selectedIndex = 0;
-        } else if (currentRoute == '/notificacao') {
+        } else if (currentRoute == Routes.NOTIFICACOES) {
+          _selectedIndex = 1;
+        } else if (currentRoute == Routes.CONFIGURACOES) {
           _selectedIndex = 2;
         }
       });
@@ -70,9 +72,17 @@ class _SidebarState extends State<Sidebar> {
           ListTile(
             leading: const Icon(Icons.add_alert),
             title: const Text('Notificações'),
+            selected: _selectedIndex == 1,
+            selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+            onTap: () => _navigateAndSelect(context, 1, Routes.NOTIFICACOES),
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Configurações'),
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
+            onTap: () => _navigateAndSelect(context, 2, Routes.CONFIGURACOES),
           ),
         ],
       ),

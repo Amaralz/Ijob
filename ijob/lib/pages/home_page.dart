@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
               child: Container(
-                height: availableHeight * 0.9,
+                height: availableHeight * 0.87,
                 child: Middleprimarypage(categories, services),
               ),
             ),

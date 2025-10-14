@@ -41,6 +41,8 @@ class _TabspageState extends State<Tabspage> {
         onTap: _selectedPage,
         currentIndex: _selectedPageIndex,
         type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.blue,
+        selectedItemColor: Colors.black,
         items: [
           BottomNavigationBarItem(
             icon: Icon(

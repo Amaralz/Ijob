@@ -5,4 +5,6 @@ class Routes {
   static const SERVICOS = '/servicos';
   static const NOTIFICACOES = '/notificacao';
   static const SERVICOSFILTRADOS = '/servicosfiltrados';
+  static const CONFIGURACOES = '/settings';
+  static const PRESTADOR = '/prestador';
 }

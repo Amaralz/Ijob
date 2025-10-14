@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/servicerListTile.dart';
 import 'package:ijob/Entities/servicer.dart';
+import 'package:provider/provider.dart';
 
 class Middlelistservices extends StatelessWidget {
   final List<Servicer> servicers;
@@ -18,7 +19,10 @@ class Middlelistservices extends StatelessWidget {
         itemCount: servicers.length,
         itemBuilder: (ctx, index) {
           final servicer = servicers[index];
-          return Servicerlisttile(servicer: servicer);
+          return ChangeNotifierProvider.value(
+            value: servicer,
+            child: Servicerlisttile(),
+          );
         },
       ),
     );

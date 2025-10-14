@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Entities/servicerList.dart';
+import 'package:ijob/pages/configuracoes_page.dart';
 import 'package:ijob/pages/notificacao_page.dart';
+import 'package:ijob/pages/prestador_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
 import 'package:provider/provider.dart';
 import 'pages/login_component.dart';
@@ -40,6 +42,8 @@ class MyApp extends StatelessWidget {
           Routes.HOME: (context) => Tabspage(),
           Routes.NOTIFICACOES: (context) => NotificacaoPage(),
           Routes.SERVICOSFILTRADOS: (context) => ServicosfiltradosPage(),
+          Routes.CONFIGURACOES: (context) => ConfiguracoesPage(),
+          Routes.PRESTADOR: (context) => Prestadorpage(),
         },
       ),
     );

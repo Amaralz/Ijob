@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ijob/Components/searchBar.dart';
 
 class barSearchPrimaryPage extends StatefulWidget {
-  final void Function(String) _funct;
-
-  barSearchPrimaryPage(this._funct);
+  void _funct() {}
 
   @override
   State<barSearchPrimaryPage> createState() => _SearchbarState();
@@ -23,7 +21,7 @@ class _SearchbarState extends State<barSearchPrimaryPage> {
     if (searchText.isEmpty) {
       return;
     } else {
-      widget._funct(searchText);
+      widget._funct();
     }
   }
 
