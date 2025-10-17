@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Components/middleGridPrimaryPage.dart';
-import 'package:ijob/Components/middleListServices.dart';
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/Components/categoryGridPrimaryPage.dart';
+import 'package:ijob/Components/topServicersList.dart';
 
-class Middleprimarypage extends StatelessWidget {
-  final List<Categor> categories;
-  final List<Servicer> servicers;
-
-  Middleprimarypage(this.categories, this.servicers);
-
+class Bodyprimarypage extends StatelessWidget {
   Widget placerText(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, left: 15, top: 2),
@@ -28,9 +21,9 @@ class Middleprimarypage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           placerText("Escolha por Categoria"),
-          SizedBox(height: 100, child: Middlegridprimarypage(categories)),
+          SizedBox(height: 100, child: Categorygridprimarypage()),
           placerText("Top Serviços"),
-          Expanded(child: Middlelistservices(servicers)),
+          Expanded(child: Topservicerslist()),
         ],
       ),
     );

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Components/middlePrimaryPage.dart';
+import 'package:ijob/Components/bodyPrimaryPage.dart';
 import 'package:ijob/Components/topBarPrimaryPage.dart';
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/Entities/categorList.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/Entities/servicerList.dart';
 import 'package:ijob/components/side_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,10 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Categor> categories = Categorlist().categories;
-
-  final List<Servicer> services = Servicerlist().servicers;
-
   test(String objeto) {}
 
   @override
@@ -43,7 +35,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(top: 15.0),
               child: Container(
                 height: availableHeight * 0.87,
-                child: Middleprimarypage(categories, services),
+                child: Bodyprimarypage(),
               ),
             ),
           ],

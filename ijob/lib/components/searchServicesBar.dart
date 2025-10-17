@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Searchbar extends StatelessWidget {
+class SearchServicesbar extends StatelessWidget {
   final Function? pressed;
   final TextEditingController? controller;
 
-  Searchbar({this.pressed, this.controller});
+  const SearchServicesbar({this.pressed, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +26,11 @@ class Searchbar extends StatelessWidget {
             hintText: "Pesquisar",
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
-              onPressed: () => pressed,
+              onPressed: () => pressed!(),
             ),
           ),
           controller: controller,
-          onSubmitted: (_) => pressed,
+          onSubmitted: (_) => pressed!(),
         ),
       ),
     );

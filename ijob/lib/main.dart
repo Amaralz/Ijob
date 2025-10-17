@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Entities/categorList.dart';
 import 'package:ijob/Entities/servicerList.dart';
 import 'package:ijob/pages/configuracoes_page.dart';
 import 'package:ijob/pages/notificacao_page.dart';
@@ -18,8 +19,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ChangeNotifierProvider(
-      create: (_) => Servicerlist(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Servicerlist()),
+        ChangeNotifierProvider(create: (_) => Categorlist()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'App de Cadastro',

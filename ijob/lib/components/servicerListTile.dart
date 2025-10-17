@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Entities/servicer.dart';
 import 'package:ijob/utils/routes.dart';
-import 'package:provider/provider.dart';
 
 class Servicerlisttile extends StatelessWidget {
+  final Servicer? servicer;
+
+  const Servicerlisttile({this.servicer});
+
   @override
   Widget build(BuildContext context) {
-    final servicer = Provider.of<Servicer>(context);
     // TODO: implement build
     return Card(
       clipBehavior: Clip.hardEdge,
@@ -27,17 +29,17 @@ class Servicerlisttile extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             radius: 30,
-            backgroundImage: servicer.url == null
+            backgroundImage: servicer!.url == null
                 ? NetworkImage(
                     "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg",
                   )
-                : NetworkImage(servicer.url!),
+                : NetworkImage(servicer!.url!),
           ),
           title: Text(
-            servicer.nome!,
+            servicer!.nome!,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(servicer.category!.name!),
+          subtitle: Text(servicer!.category!.name!),
         ),
       ),
     );

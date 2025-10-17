@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Components/barSearchPrimaryPage.dart';
-import 'package:ijob/Components/middleListServices.dart';
+import 'package:ijob/Components/categoryListServices.dart';
+import 'package:ijob/Components/searchServicesBar.dart';
 import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/Entities/servicerList.dart';
-import 'package:provider/provider.dart';
 
-class ServicosfiltradosPage extends StatelessWidget {
+class ServicosfiltradosPage extends StatefulWidget {
+  @override
+  State<ServicosfiltradosPage> createState() => _ServicosfiltradosPageState();
+}
+
+class _ServicosfiltradosPageState extends State<ServicosfiltradosPage> {
+  String _searcher = '';
+  bool _search = false;
+  late TextEditingController _barController;
+
+  @override
+  void initState() {
+    super.initState();
+    _barController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _barController = TextEditingController();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final categoria = ModalRoute.of(context)!.settings.arguments as Categor;
-    final provider = Provider.of<Servicerlist>(context);
-    final List<Servicer> servicers = provider.servicersByCategorie(categoria);
 
     return Scaffold(
       appBar: AppBar(
@@ -23,8 +39,22 @@ class ServicosfiltradosPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: <Widget>[
-            barSearchPrimaryPage(),
-            Expanded(child: Middlelistservices(servicers)),
+            SearchServicesbar(
+              controller: _barController,
+              pressed: () {
+                setState(() {
+                  _searcher = _barController.text;
+                  _search = _searcher.isNotEmpty;
+                });
+              },
+            ),
+            Expanded(
+              child: Categorylistservices(
+                category: categoria,
+                toSearch: _search,
+                whatSearch: _searcher,
+              ),
+            ),
           ],
         ),
       ),

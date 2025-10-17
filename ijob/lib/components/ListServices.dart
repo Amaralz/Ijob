@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/servicerListTile.dart';
 import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/Entities/servicerList.dart';
 import 'package:provider/provider.dart';
 
-class Middlelistservices extends StatelessWidget {
-  final List<Servicer> servicers;
+class Listservices extends StatelessWidget {
+  final bool? toSearch;
+  final String? whatSearch;
 
-  Middlelistservices(this.servicers);
+  const Listservices({this.toSearch, this.whatSearch});
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<Servicerlist>(context);
+
+    List<Servicer> servicers = toSearch!
+        ? provider.searchServicer(whatSearch!)
+        : provider.items;
+
     return Container(
       width: double.maxFinite,
 
@@ -18,11 +26,7 @@ class Middlelistservices extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         itemCount: servicers.length,
         itemBuilder: (ctx, index) {
-          final servicer = servicers[index];
-          return ChangeNotifierProvider.value(
-            value: servicer,
-            child: Servicerlisttile(),
-          );
+          return Servicerlisttile(servicer: servicers[index]);
         },
       ),
     );

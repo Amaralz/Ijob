@@ -7,7 +7,7 @@ class Textfieldcadastro extends StatelessWidget {
   final TextInputType? type;
   final String? label;
 
-  Textfieldcadastro({
+  const Textfieldcadastro({
     @required this.controller,
     this.mask,
     this.type,

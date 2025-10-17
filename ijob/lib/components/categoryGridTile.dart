@@ -5,7 +5,7 @@ import 'package:ijob/utils/routes.dart';
 class Categorygridtile extends StatelessWidget {
   final Categor? categoria;
 
-  Categorygridtile({@required this.categoria});
+  const Categorygridtile({@required this.categoria});
 
   @override
   Widget build(BuildContext context) {
