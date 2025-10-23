@@ -1,77 +1,124 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/services/auth_services.dart';
+import 'package:provider/provider.dart';
 
+/*import 'package:ijob/pages/home_page.dart';
+import 'package:ijob/services/auth_services.dart';
+*/
 class LoginComponent extends StatefulWidget {
   @override
   _LoginComponentState createState() => _LoginComponentState();
 }
 
 class _LoginComponentState extends State<LoginComponent> {
-  final TextEditingController usuarioController = TextEditingController();
-  final TextEditingController senhaController = TextEditingController();
+  final _formkey = GlobalKey<FormState>();
+  final usuarioController = TextEditingController();
+  final senhaController = TextEditingController();
+  bool loading = false;
 
-  void _login() {
-    String usuario = usuarioController.text;
-    String senha = senhaController.text;
-
-    if (usuario == 'admin' && senha == '123') {
-      Navigator.pushNamed(context, '/homepage');
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('usuario ou senha invalidos!')));
+  Future<void> login() async {
+    if (_formkey.currentState!.validate()) {
+      setState(() => loading = true);
+      try {
+        await context.read<AuthService>().login(
+          usuarioController.text.trim(),
+          senhaController.text,
+        );
+      } on AuthException catch (e) {
+        setState(() => loading = false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.message)));
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    usuarioController.dispose();
+    senhaController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(''), centerTitle: true), //iperson
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.asset(
-              'assets/images/trabalhadores.png',
-              height: 120,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Form(
+              key: _formkey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Image.asset(
+                    'assets/images/trabalhadores.png',
+                    height: 120,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                  SizedBox(height: 40),
+                  Text(
+                    'LOGIN',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
+                  //LOGIN
+                  TextFormField(
+                    controller: usuarioController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Informe o email corretamente!';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  //SENHA
+                  TextFormField(
+                    controller: senhaController,
+                    decoration: const InputDecoration(labelText: 'Senha'),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'informe sua senha!';
+                      } else if (value.length < 6) {
+                        return 'sua senha deve ter no mínimo 6 caracteres';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  //BOTÃO ENVIAR
+                  ElevatedButton(
+                    onPressed: loading ? null : login,
+                    child: loading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('LOGIN'),
+                  ),
+                  //BOTÃO CADASTRAR
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cadastro');
+                    },
+                    child: Text('Ainda não tem conta? Cadastre-se agora.'),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 40),
-            Text(
-              'LOGIN',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-
-            TextField(
-              controller: usuarioController,
-              decoration: const InputDecoration(labelText: 'Usuário'),
-            ),
-            TextField(
-              controller: senhaController,
-              decoration: const InputDecoration(labelText: 'Senha'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: () {
-                _login();
-              },
-              child: Text('Enviar'),
-            ),
-
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/cadastro');
-              },
-              child: Text('Não sou cadastrado'),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -84,6 +84,47 @@ class _SidebarState extends State<Sidebar> {
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 2, '/notificacao'),
           ),
+
+          // Expansion Item (adicionado após o último ListTile)
+          ExpansionTile(
+            leading: const Icon(Icons.filter_b_and_w_outlined),
+            title: const Text('Mais'),
+            onExpansionChanged: (expanded) {
+              print('Expansion Item expanded: $expanded');
+            },
+
+            children: [
+              // Subitem 1
+              ListTile(
+                leading: const Icon(Icons.home, size: 20),
+                title: const Text('Dashboard'),
+                selected: _selectedIndex == 3,
+                selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = 3;
+                  });
+                  Navigator.pop(context);
+                  print('Expansion Item 1 tapped');
+                },
+              ),
+
+              // Subitem 2
+              ListTile(
+                leading: const Icon(Icons.contact_mail, size: 20),
+                title: const Text('exportar'),
+                selected: _selectedIndex == 4,
+                selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = 4;
+                  });
+                  Navigator.pop(context);
+                  print('Expansion Item 2 tapped');
+                },
+              ),
+            ],
+          ),
         ],
       ),
     );
