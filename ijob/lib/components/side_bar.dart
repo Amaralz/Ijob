@@ -87,8 +87,8 @@ class _SidebarState extends State<Sidebar> {
 
           // Expansion Item (adicionado após o último ListTile)
           ExpansionTile(
-            leading: const Icon(Icons.kitchen),
-            title: const Text('Expansion Item'),
+            leading: const Icon(Icons.filter_b_and_w_outlined),
+            title: const Text('Mais'),
             onExpansionChanged: (expanded) {
               print('Expansion Item expanded: $expanded');
             },
@@ -97,7 +97,7 @@ class _SidebarState extends State<Sidebar> {
               // Subitem 1
               ListTile(
                 leading: const Icon(Icons.home, size: 20),
-                title: const Text('Expansion Item 1'),
+                title: const Text('Dashboard'),
                 selected: _selectedIndex == 3,
                 selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
                 onTap: () {
@@ -111,8 +111,8 @@ class _SidebarState extends State<Sidebar> {
 
               // Subitem 2
               ListTile(
-                leading: const Icon(Icons.supervisor_account, size: 20),
-                title: const Text('Expansion Item 2'),
+                leading: const Icon(Icons.contact_mail, size: 20),
+                title: const Text('exportar'),
                 selected: _selectedIndex == 4,
                 selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
                 onTap: () {
