@@ -15,6 +15,10 @@ class Categorlist extends ChangeNotifier {
     return _categories.length;
   }
 
+  Categor categoryById(String id) {
+    return _categories.where((cat) => cat.id == id).toList().single;
+  }
+
   Future<void> loadCategors() async {
     _categories.clear();
 
@@ -34,5 +38,9 @@ class Categorlist extends ChangeNotifier {
       );
     });
     notifyListeners();
+  }
+
+  void addCategor(Categor category) {
+    _categories.add(category);
   }
 }

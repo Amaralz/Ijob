@@ -60,6 +60,7 @@ class Servicerlisttile extends StatelessWidget {
                         "Localização",
                         style: TextStyle(color: Colors.white),
                       ),
+                      Icon(Icons.circle, size: 5, color: Colors.grey),
                       Icon(
                         Icons.star,
                         size: 15,
@@ -74,23 +75,48 @@ class Servicerlisttile extends StatelessWidget {
                     ],
                   ),
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(52, 158, 158, 158),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    width: 50,
-                    height: 20,
-                    padding: const EdgeInsets.all(3),
-                    child: FittedBox(
-                      child: Text(
-                        servicer!.category!.name.toString(),
-                        style: TextStyle(
-                          color: const Color.fromARGB(255, 173, 173, 173),
-                        ),
-                      ),
-                    ),
-                  ),
+                  servicer!.category != null && servicer!.category!.isNotEmpty
+                      ? Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          children: servicer!.category!
+                              .map(
+                                (category) => Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(
+                                      52,
+                                      158,
+                                      158,
+                                      158,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  padding: const EdgeInsets.all(3),
+                                  child: SizedBox(
+                                    height: 18,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: FittedBox(
+                                        alignment: AlignmentGeometry.center,
+                                        child: Text(
+                                          category.name!,
+                                          style: TextStyle(
+                                            color: const Color.fromARGB(
+                                              255,
+                                              173,
+                                              173,
+                                              173,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ],

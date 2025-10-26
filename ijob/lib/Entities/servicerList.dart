@@ -9,22 +9,22 @@ class Servicerlist extends ChangeNotifier {
   List<Servicer> get servicers => [..._servicers];
 
   List<Servicer> servicersByCategorie(Categor categorie) {
-    return _servicers
-        .where((serv) => serv.category!.id == categorie.id)
-        .toList();
+    final list = _servicers.where((serv) {
+      return serv.category!.any((cat) {
+        return cat.id == categorie.id;
+      });
+    }).toList();
+    return list;
   }
 
   List<Servicer> searchServicerServicersByCategorie(
     Categor categorie,
     String searcher,
   ) {
-    return _servicers
-        .where(
-          (serv) =>
-              serv.category! == categorie.id &&
-              serv.nome!.toLowerCase().startsWith(searcher),
-        )
-        .toList();
+    final list = servicersByCategorie(
+      categorie,
+    ).where((serv) => serv.nome!.toLowerCase().startsWith(searcher)).toList();
+    return list;
   }
 
   List<Servicer> searchServicer(String search) {

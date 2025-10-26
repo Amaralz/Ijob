@@ -4,7 +4,7 @@ class Servicer {
   final String? id;
   final String? nome;
   final String? url;
-  final Categor? category;
+  final List<Categor>? category;
   final String? email;
 
   Servicer({
