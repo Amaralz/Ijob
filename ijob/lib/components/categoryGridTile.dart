@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Entities/categor.dart';
+import 'package:ijob/utils/icnoMap.dart';
 import 'package:ijob/utils/routes.dart';
 
 class Categorygridtile extends StatelessWidget {
@@ -9,6 +10,15 @@ class Categorygridtile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Icon corvertIcon(String iconName) {
+      IconData iconData = Icnomap.getIconData(iconName);
+      return Icon(
+        iconData,
+        size: 40,
+        color: Theme.of(context).unselectedWidgetColor,
+      );
+    }
+
     // TODO: implement build
     return Card(
       elevation: 1,
@@ -25,11 +35,7 @@ class Categorygridtile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(
-              categoria!.icon,
-              size: 40,
-              color: Theme.of(context).unselectedWidgetColor,
-            ),
+            corvertIcon(categoria!.icon.toString()),
             Container(
               alignment: Alignment.center,
               width: 90,

@@ -6,8 +6,6 @@ import 'package:ijob/Entities/servicer.dart';
 class Servicerlist extends ChangeNotifier {
   List<Servicer> _servicers = DummyServicer;
 
-  List<Servicer> get items => [..._servicers];
-
   List<Servicer> get servicers => [..._servicers];
 
   List<Servicer> servicersByCategorie(Categor categorie) {
@@ -23,7 +21,7 @@ class Servicerlist extends ChangeNotifier {
     return _servicers
         .where(
           (serv) =>
-              serv.category!.id == categorie.id &&
+              serv.category! == categorie.id &&
               serv.nome!.toLowerCase().startsWith(searcher),
         )
         .toList();

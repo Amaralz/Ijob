@@ -16,7 +16,7 @@ class Listservices extends StatelessWidget {
 
     List<Servicer> servicers = toSearch!
         ? provider.searchServicer(whatSearch!)
-        : provider.items;
+        : provider.servicers;
 
     return Container(
       width: double.maxFinite,

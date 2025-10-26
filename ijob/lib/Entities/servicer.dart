@@ -5,11 +5,13 @@ class Servicer {
   final String? nome;
   final String? url;
   final Categor? category;
+  final String? email;
 
   Servicer({
     required this.id,
     required this.nome,
     required this.category,
+    this.email,
     this.url,
   });
 }
