@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/pages/notificacao_page.dart';
+import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/servicos_page.dart';
 import 'package:ijob/widgets/auth_check.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +15,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  final authService = AuthService();
+
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthService())],
+      providers: [ChangeNotifierProvider.value(value: authService)],
 
       child: MaterialApp(
         title: 'Ijob',
@@ -35,7 +38,9 @@ void main() async {
         initialRoute: '/auth_check',
         routes: {
           '/auth_check': (context) => AuthCheck(),
+          '/login': (context) => LoginComponent(),
           '/cadastro': (context) => CadastroComponent(),
+          '/perfil': (context) => const PerfilPage(),
           '/homepage': (context) => HomePage(),
           '/servicos': (context) => ServicosPage(),
           '/notificacao': (context) => NotificacaoPage(),

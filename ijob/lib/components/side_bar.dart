@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/services/auth_services.dart';
+import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
@@ -124,6 +126,24 @@ class _SidebarState extends State<Sidebar> {
                 },
               ),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: OutlinedButton(
+              onPressed: () async {
+                await Provider.of<AuthService>(context, listen: false).logout();
+              },
+              style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(14.0),
+                    child: Text('Sair do App', style: TextStyle(fontSize: 14)),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:ijob/services/auth_services.dart';
 */
 class LoginComponent extends StatefulWidget {
+  const LoginComponent({Key? key}) : super(key: key);
   @override
   _LoginComponentState createState() => _LoginComponentState();
 }
@@ -24,11 +25,26 @@ class _LoginComponentState extends State<LoginComponent> {
           usuarioController.text.trim(),
           senhaController.text,
         );
-      } on AuthException catch (e) {
-        setState(() => loading = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.message)));
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/auth_check',
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() => loading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                e is AuthException
+                    ? e.message
+                    : 'Erro inesperado ao fazer login',
+              ),
+            ),
+          );
+        }
       }
     }
   }
@@ -75,6 +91,11 @@ class _LoginComponentState extends State<LoginComponent> {
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Informe o email corretamente!';
+                      }
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value)) {
+                        return 'informe um email válido!';
                       }
                       return null;
                     },
