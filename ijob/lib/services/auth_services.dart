@@ -15,25 +15,32 @@ class AuthService extends ChangeNotifier {
     _authCheck();
   }
 
-  _authCheck() {
+  void _authCheck() {
     _auth.authStateChanges().listen((User? user) {
-      usuario = (user == null) ? null : user;
+      usuario = user;
       isLoading = false;
-      notifyListeners();
+      print('authStateChanges: usuário = ${user?.email}, isLoading = false');
+      Future.microtask(() => notifyListeners());
     });
   }
 
   Future<void> login(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      setStateLoading(true);
+      print('Tentando login com $email');
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .timeout(const Duration(seconds: 10));
+      print('Login bem sucedido');
     } on FirebaseAuthException catch (e) {
+      setStateLoading(false);
       String message;
       switch (e.code) {
         case 'user-not-found':
-          message = 'Usuário não encontrado.';
+          message = 'Usuário não encontrado. Cadastre-se';
           break;
         case 'wrong-password':
-          message = 'Senha incorreta.';
+          message = 'Senha incorreta. Tente novamente';
           break;
         case 'invalid-email':
           message = 'email inválido.';
@@ -42,6 +49,51 @@ class AuthService extends ChangeNotifier {
           message = 'Erro ao fazer login: ${e.message}';
       }
       throw AuthException(message);
+    } catch (e) {
+      print('Erro no login: $e');
+      setStateLoading(false);
+      throw AuthException('Erro inesperado ao fazer login: $e');
+    }
+  }
+
+  Future<void> registrar(String email, String password) async {
+    try {
+      setStateLoading(true);
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .timeout(const Duration(seconds: 10));
+    } on FirebaseAuthException catch (e) {
+      setStateLoading(false);
+      String message;
+      switch (e.code) {
+        case 'email-already-in-use':
+          message = 'Este email já está cadastrado.';
+          break;
+        case 'invalid-email':
+          message = 'Email inválido.';
+          break;
+        case 'weak-password':
+          message = 'A senha é muito fraca.';
+          break;
+        default:
+          message = 'Erro ao cadastrar: ${e.message}';
+      }
+      throw AuthException(message);
+    } catch (e) {
+      setStateLoading(false);
+      throw AuthException('Erro inesperado ao cadastrar: $e');
+    }
+  }
+
+  Future<void> logout() async {
+    await _auth.signOut();
+    print('Logout realizado');
+  }
+
+  void setStateLoading(bool value) {
+    if (isLoading != value) {
+      isLoading = value;
+      notifyListeners();
     }
   }
 }
