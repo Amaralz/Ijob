@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/components/categoryListServices.dart';
 import 'package:ijob/components/searchServicesBar.dart';
-import 'package:ijob/components/ListServices.dart';
+import 'package:ijob/Entities/categor.dart';
 
-class ServicosPage extends StatefulWidget {
+class ServicosfiltradosPage extends StatefulWidget {
   @override
-  State<ServicosPage> createState() => _ServicosPageState();
+  State<ServicosfiltradosPage> createState() => _ServicosfiltradosPageState();
 }
 
-class _ServicosPageState extends State<ServicosPage> {
+class _ServicosfiltradosPageState extends State<ServicosfiltradosPage> {
   String _searcher = '';
   bool _search = false;
   late TextEditingController _barController;
@@ -26,7 +27,14 @@ class _ServicosPageState extends State<ServicosPage> {
 
   @override
   Widget build(BuildContext context) {
+    final categoria = ModalRoute.of(context)!.settings.arguments as Categor;
+
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(categoria.name.toString()),
+        backgroundColor: Colors.blue,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
@@ -41,7 +49,11 @@ class _ServicosPageState extends State<ServicosPage> {
               },
             ),
             Expanded(
-              child: Listservices(toSearch: _search, whatSearch: _searcher),
+              child: Categorylistservices(
+                category: categoria,
+                toSearch: _search,
+                whatSearch: _searcher,
+              ),
             ),
           ],
         ),

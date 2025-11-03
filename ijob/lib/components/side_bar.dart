@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/services/database_helper.dart';
 import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget {
@@ -10,6 +11,18 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
+  String _nome = 'Carregando..';
+
+  Future<void> _carregarNome() async {
+    final user = Provider.of<AuthService>(context, listen: false).usuario;
+    if (user != null) {
+      final perfil = await DatabaseHelper().buscarPerfil(user.uid);
+      if (perfil != null && mounted) {
+        setState(() => _nome = perfil['nome']);
+      }
+    }
+  }
+
   int _selectedIndex = 0;
 
   void _navigateAndSelect(BuildContext context, int index, String route) {
@@ -27,6 +40,7 @@ class _SidebarState extends State<Sidebar> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() => _carregarNome());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentRoute = ModalRoute.of(context)?.settings.name;
       setState(() {
@@ -47,13 +61,15 @@ class _SidebarState extends State<Sidebar> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const UserAccountsDrawerHeader(
+          UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
             accountName: Text(
-              'Lael Amaral',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              _nome,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            accountEmail: Text("lael.amaral@gmail.com"),
+            accountEmail: Text(
+              Provider.of<AuthService>(context).usuario?.email ?? '',
+            ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: Colors.blue),

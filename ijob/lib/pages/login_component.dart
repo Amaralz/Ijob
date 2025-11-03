@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 /*import 'package:ijob/pages/home_page.dart';
@@ -28,7 +29,7 @@ class _LoginComponentState extends State<LoginComponent> {
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            '/auth_check',
+            Routes.AUTHCHECK,
             (route) => false,
           );
         }
