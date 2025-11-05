@@ -1,17 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Entities/categorList.dart';
 import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/utils/icnoMap.dart';
+import 'package:provider/provider.dart';
 
 class Prestadorpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final catProvider = Provider.of<Categorlist>(context);
+
+    Icon corvertIcon(String iconName) {
+      IconData iconData = Icnomap.getIconData(iconName);
+      return Icon(iconData, size: 20, color: Theme.of(context).primaryColor);
+    }
+
     final Servicer servicer =
         ModalRoute.of(context)!.settings.arguments as Servicer;
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text(servicer.nome.toString()),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 50,
+            pinned: true,
+            title: Text(
+              servicer.nome.toString(),
+              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+            ),
+            centerTitle: true,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(servicer.url!),
+                      radius: 70,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: servicer.category!.map((category) {
+                      final cat = catProvider.categoryById(category);
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).hintColor,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  cat!.name!,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                corvertIcon(cat.icon.toString()),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  SizedBox(
+                    width: 300,
+                    child: TextButton.icon(
+                      onPressed: () {},
+                      label: Text(
+                        "Localização...",
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      icon: Icon(Icons.add_location),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
+          ),
+        ],
+      ),
+      bottomNavigationBar: SizedBox(
+        width: double.maxFinite,
+        height: 50,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(15),
+            ),
+            backgroundColor: Theme.of(context).secondaryHeaderColor,
+          ),
+          onPressed: () {},
+          child: Text(
+            "Iniciar Pedido",
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+        ),
       ),
     );
   }

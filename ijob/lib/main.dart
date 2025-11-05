@@ -37,12 +37,15 @@ class MyApp extends StatelessWidget {
 
         theme: ThemeData(
           brightness: Brightness.light,
-          colorSchemeSeed: Colors.blue,
+          colorSchemeSeed: Colors.red,
+          secondaryHeaderColor: Colors.redAccent,
         ),
 
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorSchemeSeed: Colors.blue,
+          secondaryHeaderColor: Colors.lightBlue,
+          hintColor: const Color.fromARGB(255, 99, 206, 255),
         ),
         themeMode: ThemeMode.system,
 

@@ -7,11 +7,14 @@ class ConfiguracoesPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("Configurações"),
+        title: Text(
+          "Configurações",
+          style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
       ),
       drawer: Sidebar(),
+      body: Column(children: []),
     );
   }
 }

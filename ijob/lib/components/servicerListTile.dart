@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Entities/categorList.dart';
 import 'package:ijob/Entities/servicer.dart';
 import 'package:ijob/utils/routes.dart';
+import 'package:provider/provider.dart';
 
 class Servicerlisttile extends StatelessWidget {
   final Servicer? servicer;
@@ -9,6 +11,7 @@ class Servicerlisttile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<Categorlist>(context);
     // TODO: implement build
     return Card(
       clipBehavior: Clip.hardEdge,
@@ -90,7 +93,9 @@ class Servicerlisttile extends StatelessWidget {
                                       child: FittedBox(
                                         alignment: AlignmentGeometry.center,
                                         child: Text(
-                                          category.name!,
+                                          provider
+                                              .categoryById(category)!
+                                              .name!,
                                           style: TextStyle(
                                             color: const Color.fromARGB(
                                               255,

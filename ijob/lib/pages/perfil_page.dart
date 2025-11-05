@@ -168,7 +168,7 @@ class _PerfilPageState extends State<PerfilPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _genero,
+                initialValue: _genero,
                 decoration: const InputDecoration(
                   labelText: 'Gênero',
                   border: OutlineInputBorder(),

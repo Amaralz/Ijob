@@ -12,9 +12,9 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  String _nome = 'Carregando..';
+  String _nome = 'Carregando...';
 
-  Future<void> _carregarNome() async {
+  void _carregarNome() {
     final user = Provider.of<AuthService>(context, listen: false).usuario;
     if (user != null) {
       if (mounted) {
@@ -45,7 +45,7 @@ class _SidebarState extends State<Sidebar> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _carregarNome());
+    _carregarNome();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentRoute = ModalRoute.of(context)?.settings.name;
       setState(() {
@@ -63,8 +63,8 @@ class _SidebarState extends State<Sidebar> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
@@ -90,6 +90,15 @@ class _SidebarState extends State<Sidebar> {
             onTap: () => _navigateAndSelect(context, 0, Routes.HOME),
           ),
 
+          //botão configuração
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Configurações'),
+            selected: _selectedIndex == 1,
+            selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+            onTap: () => _navigateAndSelect(context, 1, Routes.CONFIGURACOES),
+          ),
+
           //botão notificação
           ListTile(
             leading: const Icon(Icons.add_alert),
@@ -97,13 +106,6 @@ class _SidebarState extends State<Sidebar> {
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Configurações'),
-            selected: _selectedIndex == 2,
-            selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 1, Routes.CONFIGURACOES),
           ),
 
           // Expansion Item (adicionado após o último ListTile)
@@ -146,6 +148,7 @@ class _SidebarState extends State<Sidebar> {
               ),
             ],
           ),
+          Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: OutlinedButton(

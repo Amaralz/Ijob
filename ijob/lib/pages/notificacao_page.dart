@@ -8,8 +8,10 @@ class NotificacaoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificações'),
-        backgroundColor: Colors.blueAccent,
+        title: Text(
+          'Notificações',
+          style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+        ),
         centerTitle: true,
       ),
       drawer: Sidebar(),

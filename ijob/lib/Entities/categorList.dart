@@ -15,8 +15,16 @@ class Categorlist extends ChangeNotifier {
     return _categories.length;
   }
 
-  Categor categoryById(String id) {
-    return _categories.where((cat) => cat.id == id).toList().single;
+  Categor? categoryById(String id) {
+    Categor? cat = _categories
+        .where((cat) => cat.id == id)
+        .toList()
+        .singleOrNull;
+    if (cat == null) {
+      return null;
+    } else {
+      return cat;
+    }
   }
 
   Future<void> loadCategors() async {

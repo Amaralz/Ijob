@@ -10,10 +10,12 @@ class Topservicerslist extends StatelessWidget {
     final List<Servicer> servicers = Provider.of<Servicerlist>(
       context,
     ).servicers;
+
+    final int count = servicers.length;
     // TODO: implement build
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: 6,
+      itemCount: count < 6 ? count : 6,
       itemBuilder: (ctx, index) {
         return Servicerlisttile(servicer: servicers[index]);
       },

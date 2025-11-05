@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Entities/servicerList.dart';
 import 'package:ijob/components/side_bar.dart';
+import 'package:ijob/pages/chatsPage.dart';
 import 'package:ijob/pages/home_page.dart';
 import 'package:ijob/pages/servicos_page.dart';
+import 'package:provider/provider.dart';
 
 class Tabspage extends StatefulWidget {
   @override
@@ -14,15 +17,25 @@ class _TabspageState extends State<Tabspage> {
   final List<Map<String, Object>> _pages = [
     {'title': 'Ijob', 'page': HomePage()},
     {'title': 'Serviços', 'page': ServicosPage()},
+    {'title': 'Conversas', 'page': Chatspage()},
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<Servicerlist>(context, listen: false).loadServicers();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        title: Text(_pages[_selectedPageIndex]['title'] as String),
+        title: Text(
+          _pages[_selectedPageIndex]['title'] as String,
+          style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+        ),
       ),
       drawer: Sidebar(),
 
@@ -43,6 +56,11 @@ class _TabspageState extends State<Tabspage> {
             icon: Icon(Icons.search_outlined),
             selectedIcon: Icon(Icons.search),
             label: "Serviços",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.chat_outlined),
+            selectedIcon: Icon(Icons.chat),
+            label: "Conversas",
           ),
         ],
       ),
