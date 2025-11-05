@@ -61,17 +61,8 @@ class Servicerlisttile extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       ),
                       Icon(Icons.circle, size: 5, color: Colors.grey),
-                      Icon(
-                        Icons.star,
-                        size: 15,
-                        color: const Color.fromARGB(255, 243, 215, 56),
-                      ),
-                      Text(
-                        "5.0",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 243, 215, 56),
-                        ),
-                      ),
+                      Icon(Icons.star, size: 15),
+                      Text("5.0", style: TextStyle()),
                     ],
                   ),
 

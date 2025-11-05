@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       drawer: const Sidebar(), //adicionar lugares para navegar futuramente
       body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: Colors.blue))
+          ? Center(child: CircularProgressIndicator(color: Colors.blueAccent))
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[

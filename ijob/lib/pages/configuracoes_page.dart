@@ -9,7 +9,7 @@ class ConfiguracoesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Configurações"),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
       ),
       drawer: Sidebar(),
     );

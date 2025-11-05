@@ -11,7 +11,7 @@ class Prestadorpage extends StatelessWidget {
       appBar: AppBar(
         title: Text(servicer.nome.toString()),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }

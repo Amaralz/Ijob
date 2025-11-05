@@ -33,7 +33,7 @@ class _ServicosfiltradosPageState extends State<ServicosfiltradosPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(categoria.name.toString()),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),

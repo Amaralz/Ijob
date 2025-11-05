@@ -32,7 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-lib/utils/
+lib/utils/urls.dart
+lib/utils/locationUtil.dart
 
 # Symbolication related
 app.*.symbols
@@ -44,3 +45,27 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase specific files
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+.runtimeconfig.json # For Firebase Functions environment variables/secrets
+firebase.json
+
+# Node.js dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Configuration files with sensitive data
+google-services.json
+GoogleService-Info.plist
+.env
+
+# Editor and OS specific files
+.DS_Store
+Thumbs.db
+.vscode/

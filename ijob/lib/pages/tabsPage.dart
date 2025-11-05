@@ -11,55 +11,42 @@ class Tabspage extends StatefulWidget {
 class _TabspageState extends State<Tabspage> {
   int _selectedPageIndex = 0;
 
-  List<Map<String, Object>>? _pages;
-
-  void initState() {
-    super.initState();
-    _pages = [
-      {'title': 'Ijob', 'page': HomePage()},
-      {'title': 'Serviços', 'page': ServicosPage()},
-    ];
-  }
-
-  _selectedPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-  }
+  final List<Map<String, Object>> _pages = [
+    {'title': 'Ijob', 'page': HomePage()},
+    {'title': 'Serviços', 'page': ServicosPage()},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blue,
-        title: Text(_pages![_selectedPageIndex]['title'] as String),
+        backgroundColor: Colors.blueAccent,
+        title: Text(_pages[_selectedPageIndex]['title'] as String),
       ),
       drawer: Sidebar(),
-      body: _pages![_selectedPageIndex]['page'] as Widget,
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectedPage,
-        currentIndex: _selectedPageIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blue,
-        selectedItemColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              _selectedPageIndex == 0 ? Icons.home : Icons.home_outlined,
-            ),
+
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedPageIndex = index;
+          });
+        },
+        selectedIndex: _selectedPageIndex,
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
             label: "Início",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              _selectedPageIndex == 1
-                  ? Icons.person_search
-                  : Icons.person_search_outlined,
-            ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
             label: "Serviços",
           ),
         ],
       ),
+      body: _pages[_selectedPageIndex]['page'] as Widget,
     );
   }
 }

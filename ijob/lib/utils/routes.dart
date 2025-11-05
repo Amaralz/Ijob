@@ -7,4 +7,6 @@ class Routes {
   static const SERVICOSFILTRADOS = '/servicosfiltrados';
   static const CONFIGURACOES = '/settings';
   static const PRESTADOR = '/prestador';
+  static const PERFIL = '/perfil';
+  static const AUTHCHECK = '/auth_check';
 }
