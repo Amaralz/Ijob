@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: availableHeight * 0.2,
+                    //height: availableHeight * 0.2,
                     width: double.maxFinite,
                     child: topBarPrimaryPage(),
                   ),

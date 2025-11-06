@@ -15,6 +15,26 @@ class DatabaseHelper {
     return _database!;
   }
 
+  Future<bool> cpfExiste(String cpf) async {
+    final db = await database;
+    final result = await db.query(
+      'perfil',
+      where: 'cpf =  ?',
+      whereArgs: [cpf],
+    );
+    return result.isNotEmpty;
+  }
+
+  Future<bool> celularExiste(String celular) async {
+    final db = await database;
+    final result = await db.query(
+      'perfil',
+      where: 'celular = ?',
+      whereArgs: [celular],
+    );
+    return result.isNotEmpty;
+  }
+
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, 'ijob.db');
