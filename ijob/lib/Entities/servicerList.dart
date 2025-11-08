@@ -8,7 +8,11 @@ class Servicerlist extends ChangeNotifier {
   final _db = FirebaseFirestore.instance.collection("servicer");
   List<Servicer> _servicers = [];
 
+  Servicer? _servicerUser;
+
   List<Servicer> get servicers => [..._servicers];
+
+  Servicer get servicerUser => _servicerUser!;
 
   List<Servicer> servicersByCategorie(Categor categorie) {
     final list = _servicers.where((serv) {
@@ -35,6 +39,19 @@ class Servicerlist extends ChangeNotifier {
         .toList();
   }
 
+  Future<bool> _verificarCpfUnico(Servicer user) async {
+    final snapshot = await _db.where('cpf', isEqualTo: user.cpf).limit(1).get();
+    return snapshot.docs.isEmpty;
+  }
+
+  Future<bool> _verificarCelularUnico(Servicer user) async {
+    final snapshot = await _db
+        .where('celular', isEqualTo: user.celular)
+        .limit(1)
+        .get();
+    return snapshot.docs.isEmpty;
+  }
+
   Future<void> loadServicers() async {
     _servicers.clear();
     try {
@@ -48,16 +65,64 @@ class Servicerlist extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> loadServicerUser(User user) async {
+    final query = await _db.doc(user.uid).get();
+    if (query.exists) {
+      _servicerUser = Servicer.fromSnapshot(query);
+
+      notifyListeners();
+    } else {
+      throw Exception("Servicer não encontrado");
+    }
+  }
+
+  Future<Servicer?> getServicer(String uid) async {
+    try {
+      final query = await _db.doc(uid).get();
+      return await Servicer.fromSnapshot(query);
+    } catch (e) {
+      print("ERROOOOOOOOO");
+      return null;
+    }
+  }
+
   Future<void> createServicer(User user, Servicer servicer) async {
-    String uid = user.uid;
-    final docRef = _db.doc(uid);
-    await docRef.set(servicer.toJson());
-    _servicers.add(servicer);
+    String response = '';
+    try {
+      String uid = user.uid;
+      final docRef = _db.doc(uid);
+
+      bool cpfU = await _verificarCpfUnico(servicer);
+      bool teleU = await _verificarCelularUnico(servicer);
+
+      if (!cpfU) {
+        response = 'CPF já existe em outra conta!';
+        return;
+      }
+
+      if (!teleU) {
+        response = 'Celular já existe em outra conta!';
+        return;
+      }
+      await docRef.set(servicer.toJson());
+      _servicers.add(servicer);
+    } catch (e) {
+      print(response);
+    }
     notifyListeners();
   }
 
   void removeServicer(Servicer servicer) {
     _servicers.remove(servicer);
     notifyListeners();
+  }
+
+  Future<bool> existsServicer(User user) async {
+    final verify = await _db.where('id', isEqualTo: user.uid).get();
+
+    if (verify.docs.isNotEmpty) {
+      return true;
+    } else
+      return false;
   }
 }

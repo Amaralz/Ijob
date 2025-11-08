@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Entities/profileUser.dart';
 import 'package:ijob/Entities/profileUserList.dart';
+import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/Entities/servicerList.dart';
+import 'package:ijob/Entities/userRole.dart';
 import 'package:ijob/services/auth_services.dart';
 import 'package:ijob/utils/routes.dart';
 import 'package:provider/provider.dart';
@@ -12,19 +16,28 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  String _nome = 'Carregando...';
-
-  void _carregarNome() {
+  //
+  Future<String> _carregarNome(Userrole role) async {
     final user = Provider.of<AuthService>(context, listen: false).usuario;
-    if (user != null) {
-      if (mounted) {
-        setState(
-          () => _nome = Provider.of<Profileuserlist>(
-            context,
-            listen: false,
-          ).searchProfiler(user.uid)!.nome!,
-        );
+    if (user == null) return "Visitante";
+    try {
+      if (role.isUsu) {
+        Profileuser? userName = await Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).getProfile(user.uid);
+        return userName?.nome ?? "Usuário";
+      } else if (role.isServicer) {
+        print(Provider.of<Userrole>(context, listen: false).isServicer);
+        Servicer? servicerName = await Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).getServicer(user.uid);
+        return servicerName?.nome ?? "Servidor";
       }
+      return "Usuário";
+    } catch (e) {
+      return "Error";
     }
   }
 
@@ -45,7 +58,6 @@ class _SidebarState extends State<Sidebar> {
   @override
   void initState() {
     super.initState();
-    _carregarNome();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentRoute = ModalRoute.of(context)?.settings.name;
       setState(() {
@@ -62,19 +74,32 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   Widget build(BuildContext context) {
+    final role = Provider.of<Userrole>(context);
+    final auth = Provider.of<AuthService>(context);
+    print(role.isUsu);
     return Drawer(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
-            accountName: Text(
-              _nome,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            accountName: FutureBuilder<String>(
+              future: _carregarNome(role),
+              builder: (context, snapshot) {
+                String name = "";
+                if (snapshot.connectionState == ConnectionState.done) {
+                  name = snapshot.data ?? "Usuário";
+                }
+                if (snapshot.hasError) {
+                  name = "Erro ao carregar";
+                }
+                return Text(
+                  name,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                );
+              },
             ),
-            accountEmail: Text(
-              Provider.of<AuthService>(context).usuario?.email ?? '',
-            ),
+            accountEmail: Text(auth.usuario?.email ?? ''),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: Colors.blue),
@@ -87,7 +112,11 @@ class _SidebarState extends State<Sidebar> {
             title: const Text("Home"),
             selected: _selectedIndex == 0,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 0, Routes.HOME),
+            onTap: () => _navigateAndSelect(
+              context,
+              0,
+              role.isUsu ? Routes.HOME : Routes.SERVICERHOME,
+            ),
           ),
 
           //botão configuração

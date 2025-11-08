@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ijob/Entities/categorList.dart';
 import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/pages/mapPage.dart';
 import 'package:ijob/utils/icnoMap.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class Prestadorpage extends StatelessWidget {
+  Future<LatLng> getUserPosition() async {
+    final position = await Location().getLocation();
+    return LatLng(position.latitude!, position.longitude!);
+  }
+
   @override
   Widget build(BuildContext context) {
     final catProvider = Provider.of<Categorlist>(context);
@@ -16,6 +24,9 @@ class Prestadorpage extends StatelessWidget {
 
     final Servicer servicer =
         ModalRoute.of(context)!.settings.arguments as Servicer;
+
+    final String _address =
+        "${servicer.endereco!.locality}, ${servicer.endereco!.route}, ${servicer.endereco!.number}";
     // TODO: implement build
     return Scaffold(
       body: CustomScrollView(
@@ -75,11 +86,19 @@ class Prestadorpage extends StatelessWidget {
                   SizedBox(
                     width: 300,
                     child: TextButton.icon(
-                      onPressed: () {},
-                      label: Text(
-                        "Localização...",
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      onPressed: () async {
+                        LatLng _userp = await getUserPosition();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => Mappage(
+                              initial: servicer.endereco!.latilong,
+                              userp: _userp,
+                            ),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      },
+                      label: Text(_address, overflow: TextOverflow.ellipsis),
                       icon: Icon(Icons.add_location),
                     ),
                   ),

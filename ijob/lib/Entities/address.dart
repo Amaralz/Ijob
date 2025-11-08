@@ -1,49 +1,71 @@
-class Address {
-  final String route;
-  final String number;
-  final String neighborhood;
-  final String locality;
-  final String administrativeArea;
-  final String country;
-  final double? lat;
-  final double? long;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-  const Address({
-    required this.route,
-    required this.number,
-    required this.neighborhood,
-    required this.locality,
-    required this.administrativeArea,
-    required this.country,
-    this.lat,
-    this.long,
-  });
+class Address {
+  final String _route;
+  final String _number;
+  final String _neighborhood;
+  final String _locality;
+  final String _administrativeArea;
+  final String _country;
+  final double? _lat;
+  final double? _long;
+
+  const Address(
+    this._route,
+    this._number,
+    this._neighborhood,
+    this._locality,
+    this._administrativeArea,
+    this._country,
+    this._lat,
+    this._long,
+  );
 
   //enviar
   Map<String, dynamic> toJson() {
     return {
-      "route": route,
-      "number": number,
-      "neighborhood": neighborhood,
-      "locality": locality,
-      "administrativeArea": administrativeArea,
-      "country": country,
-      "lat": lat,
-      "long": long,
+      "route": _route,
+      "number": _number,
+      "neighborhood": _neighborhood,
+      "locality": _locality,
+      "administrativeArea": _administrativeArea,
+      "country": _country,
+      "lat": _lat,
+      "long": _long,
     };
   }
 
   //receber
   factory Address.fromMap(Map<String, dynamic> map) {
     return Address(
-      route: map['route'] ?? '',
-      number: map['number'] ?? '',
-      neighborhood: map['neighborhood'] ?? '',
-      locality: map['locality'] ?? '',
-      administrativeArea: map['administrativeArea'] ?? '',
-      country: map['country'] ?? '',
-      lat: (map['lat'] as num?)?.toDouble() ?? 0.0,
-      long: (map['long'] as num?)?.toDouble() ?? 0.0,
+      map['route'] ?? '',
+      map['number'] ?? '',
+      map['neighborhood'] ?? '',
+      map['locality'] ?? '',
+      map['administrativeArea'] ?? '',
+      map['country'] ?? '',
+      (map['lat'] as num?)?.toDouble() ?? 0.0,
+      (map['long'] as num?)?.toDouble() ?? 0.0,
     );
+  }
+
+  LatLng get latilong {
+    return LatLng(_lat!, _long!);
+  }
+
+  String get locality {
+    return _locality;
+  }
+
+  String get neighborhood {
+    return _neighborhood;
+  }
+
+  String get route {
+    return _route;
+  }
+
+  String get number {
+    return _number;
   }
 }

@@ -1,45 +1,41 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/profileUserList.dart';
+import 'package:ijob/Components/side_bar.dart';
 import 'package:ijob/Entities/servicerList.dart';
 import 'package:ijob/Entities/userRole.dart';
-import 'package:ijob/components/side_bar.dart';
 import 'package:ijob/pages/chatsPage.dart';
-import 'package:ijob/pages/home_page.dart';
-import 'package:ijob/pages/servicos_page.dart';
+import 'package:ijob/pages/dashboardPage.dart';
 import 'package:ijob/services/auth_services.dart';
 import 'package:provider/provider.dart';
 
-class Tabspage extends StatefulWidget {
+class Tabsservicer extends StatefulWidget {
   @override
-  State<Tabspage> createState() => _TabspageState();
+  State<Tabsservicer> createState() => _TabsservicerState();
 }
 
-class _TabspageState extends State<Tabspage> {
+class _TabsservicerState extends State<Tabsservicer> {
   int _selectedPageIndex = 0;
 
   final List<Map<String, Object>> _pages = [
-    {'title': "Ijob", 'page': HomePage()},
-    {'title': 'Serviços', 'page': ServicosPage()},
-    {'title': 'Conversas', 'page': Chatspage()},
+    {'title': 'Mensagens', 'page': Chatspage()},
+    {'title': 'Métricas', 'page': Dashboardpage()},
   ];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     User? user = Provider.of<AuthService>(context, listen: false).usuario;
-    Provider.of<Profileuserlist>(context, listen: false).loadProfileUser(user!);
-    Provider.of<Servicerlist>(context, listen: false).loadServicers();
+    Provider.of<Servicerlist>(context, listen: false).loadServicerUser(user!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        Provider.of<Userrole>(context, listen: false).changeToClient();
+        Provider.of<Userrole>(context, listen: false).changeToServicer();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -59,19 +55,14 @@ class _TabspageState extends State<Tabspage> {
         selectedIndex: _selectedPageIndex,
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: "Início",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search_outlined),
-            selectedIcon: Icon(Icons.search),
-            label: "Serviços",
-          ),
-          NavigationDestination(
             icon: Icon(Icons.chat_outlined),
             selectedIcon: Icon(Icons.chat),
             label: "Conversas",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.data_thresholding_outlined),
+            selectedIcon: Icon(Icons.data_thresholding),
+            label: "Métricas",
           ),
         ],
       ),

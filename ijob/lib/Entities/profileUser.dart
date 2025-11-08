@@ -1,19 +1,73 @@
-//import 'package:ijob/Entities/address.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ijob/Entities/address.dart';
 
 class Profileuser {
-  String? id;
-  String? nome;
-  String? cpf;
-  String? bairro;
-  String? celular;
-  String? genero;
+  final String? id;
+  final String? email;
+  final String? nome;
+  final String? cpf;
+  final String? celular;
+  final String? genero;
+  final Address? endereco;
+  final int role;
 
-  Profileuser({
+  const Profileuser({
     required this.id,
+    required this.email,
     required this.nome,
     required this.cpf,
     required this.celular,
     required this.genero,
-    this.bairro,
+    required this.endereco,
+    required this.role,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'nome': nome,
+      'cpf': cpf,
+      'celular': celular,
+      'genero': genero,
+      'endereco': endereco?.toJson(),
+      'role': role,
+    };
+  }
+
+  factory Profileuser.fromSnapshot(
+    DocumentSnapshot<Map<String, dynamic>> docu,
+  ) {
+    final data = docu.data();
+    return Profileuser(
+      id: docu.id,
+      email: data!['email'],
+      nome: data['nome'],
+      cpf: data['cpf'],
+      celular: data['celular'],
+      genero: data['genero'],
+      endereco: Address.fromMap(data['endereco']),
+      role: data['role'],
+    );
+  }
+  /*
+  String? get id {
+    return _id;
+  }
+
+  String? get cpf {
+    return _cpf;
+  }
+
+  String? get celular {
+    return _celular;
+  }
+
+  int? get role {
+    return _role;
+  }
+
+  String? get nome {
+    return _nome;
+  }
+  */
 }

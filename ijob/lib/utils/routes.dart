@@ -9,4 +9,6 @@ class Routes {
   static const PRESTADOR = '/prestador';
   static const PERFIL = '/perfil';
   static const AUTHCHECK = '/auth_check';
+  static const CHAT = '/chat';
+  static const SERVICERHOME = '/servicerhome';
 }

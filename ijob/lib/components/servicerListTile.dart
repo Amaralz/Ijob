@@ -11,6 +11,8 @@ class Servicerlisttile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String _address =
+        "${servicer!.endereco!.route}, ${servicer!.endereco!.number}";
     final provider = Provider.of<Categorlist>(context);
     // TODO: implement build
     return Card(
@@ -59,13 +61,17 @@ class Servicerlisttile extends StatelessWidget {
                   Row(
                     spacing: 3,
                     children: [
-                      Text(
-                        "Localização",
-                        style: TextStyle(color: Colors.white),
+                      SizedBox(
+                        width: 120,
+                        child: Text(
+                          _address,
+                          style: TextStyle(color: Colors.white),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       Icon(Icons.circle, size: 5, color: Colors.grey),
                       Icon(Icons.star, size: 15),
-                      Text("5.0", style: TextStyle()),
+                      Text(servicer!.rating.toString(), style: TextStyle()),
                     ],
                   ),
 

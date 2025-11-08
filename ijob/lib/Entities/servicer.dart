@@ -8,8 +8,10 @@ class Servicer {
   final List<String>? category;
   final String? email;
   final String? cpf;
+  final String? celular;
   final Address? endereco;
   final double rating;
+  final int role;
 
   Servicer({
     required this.id,
@@ -17,9 +19,12 @@ class Servicer {
     required this.category,
     required this.cpf,
     required this.endereco,
+    this.celular,
     this.email,
-    this.url,
+    this.url =
+        "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
     this.rating = 5.0,
+    this.role = 1,
   });
 
   //enviar
@@ -32,6 +37,8 @@ class Servicer {
       'url': url,
       'endereco': endereco?.toJson(),
       'rating': rating,
+      'celular': celular,
+      'role': role,
     };
   }
 
@@ -47,6 +54,8 @@ class Servicer {
       email: data["email"],
       url: data["url"],
       rating: (data['rating'] as num?)?.toDouble() ?? 5.0,
+      celular: data["celular"],
+      role: data["role"],
     );
   }
 }

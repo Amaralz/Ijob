@@ -27,7 +27,7 @@ class _CadastroComponentState extends State<CadastroComponent> {
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            Routes.AUTHCHECK,
+            Routes.PERFIL,
             (route) => false,
           );
         }

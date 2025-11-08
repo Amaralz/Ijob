@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ijob/Entities/address.dart';
+import 'package:ijob/Entities/categorList.dart';
 import 'package:ijob/Entities/profileUser.dart';
 import 'package:ijob/Entities/profileUserList.dart';
+import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/Entities/servicerList.dart';
+import 'package:ijob/data/addressData.dart';
 import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/utils/locationUtil.dart';
 import 'package:ijob/utils/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -17,9 +24,21 @@ class _PerfilPageState extends State<PerfilPage> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _cpfController = TextEditingController();
+  final _cidadeController = TextEditingController();
   final _bairroController = TextEditingController();
   final _celularcontroller = TextEditingController();
+  final _ruaController = TextEditingController();
+  final _numeroController = TextEditingController();
   String? _genero;
+  String? _paisSelecionado;
+  String? _estadoSelecionado;
+  String? _role;
+  String? _categor;
+  String? _categorSecond;
+  List<String> _selectedCategor = [];
+
+  final _paises = paises;
+  final _estadoPorPais = estadoPorPais;
 
   bool _loading = false;
 
@@ -33,6 +52,11 @@ class _PerfilPageState extends State<PerfilPage> {
     filter: {"#": RegExp(r'[0-9]')},
   );
 
+  String _nameFormatter(String string) {
+    return string.substring(0, 1).toUpperCase() +
+        string.substring(1).toLowerCase();
+  }
+
   Future<void> _salvarPerfil() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -40,55 +64,90 @@ class _PerfilPageState extends State<PerfilPage> {
 
     final user = Provider.of<AuthService>(context, listen: false).usuario;
     if (user == null) return;
+    int decider = int.parse(_role!);
 
-    final Profileuser perfil = Profileuser(
-      id: user.uid,
-      nome: _nomeController.text.trim(),
-      cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
-      celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
-      genero: _genero!,
-      bairro: _bairroController.text.trim(),
-    );
+    try {
+      LatLng location = await Locationutil.getLatLngFromAdress(
+        _ruaController.text,
+        _numeroController.text,
+        _bairroController.text,
+        _cidadeController.text,
+        _estadoSelecionado!,
+        _paisSelecionado!,
+      );
 
-    /* final perfil = {
-      'id': user.uid,
-      'nome': _nomeController.text.trim(),
-      'cpf': _cpfController.text.replaceAll(RegExp(r'\D'), ''),
-      'bairro': _bairroController.text.trim(),
-      'celular': _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
-      'genero': _genero!,
-    };*/
+      Address endereco = Address(
+        _ruaController.text,
+        _numeroController.text,
+        _bairroController.text,
+        _cidadeController.text,
+        _estadoSelecionado!,
+        _paisSelecionado!,
+        location.latitude,
+        location.longitude,
+      );
 
-    Provider.of<Profileuserlist>(context, listen: false).addProfiler(perfil);
+      if (decider == 0) {
+        //Usuario
+        final usuario = Profileuser(
+          id: user.uid,
+          email: user.email,
+          nome: _nameFormatter(_nomeController.text),
+          cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
+          celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
+          genero: _genero!,
+          endereco: endereco,
+          role: decider,
+        );
 
-    /* try {
-      await DatabaseHelper().inserirPerfil(perfil);
+        await Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).createUserProfile(user, usuario);
+      } else if (decider == 1) {
+        //prestador
+        final servicer = Servicer(
+          id: user.uid,
+          email: user.email,
+          nome: _nameFormatter(_nomeController.text),
+          category: _selectedCategor,
+          cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
+          endereco: endereco,
+          celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
+          role: decider,
+          rating: 5.0,
+        );
+        await Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).createServicer(user, servicer);
+      } else {
+        setState(() => _loading = false);
+        return;
+      }
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/auth_check',
+          Routes.AUTHCHECK,
           (route) => false,
         );
       }
     } catch (e) {
       if (mounted) {
+        setState(() {
+          _loading = false;
+        });
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Erro ao salvar perfil: $e')));
+        ).showSnackBar(const SnackBar(content: Text("Falha ao salvar dados")));
       }
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }*/
+    }
+  }
 
-    setState(() {
-      _loading = false;
-    });
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      Routes.AUTHCHECK,
-      (route) => false,
-    );
+  @override
+  void initState() {
+    Provider.of<Categorlist>(context, listen: false).loadCategors();
+    super.initState();
   }
 
   @override
@@ -117,6 +176,7 @@ class _PerfilPageState extends State<PerfilPage> {
               ),
               const SizedBox(height: 30),
 
+              //nome
               TextFormField(
                 controller: _nomeController,
                 decoration: const InputDecoration(
@@ -127,6 +187,7 @@ class _PerfilPageState extends State<PerfilPage> {
               ),
               const SizedBox(height: 16),
 
+              //cpf
               TextFormField(
                 controller: _cpfController,
                 decoration: const InputDecoration(
@@ -143,6 +204,60 @@ class _PerfilPageState extends State<PerfilPage> {
               ),
               const SizedBox(height: 16),
 
+              //PAÍS
+              DropdownButtonFormField(
+                initialValue: _paisSelecionado,
+                decoration: const InputDecoration(
+                  labelText: 'pais',
+                  border: OutlineInputBorder(),
+                ),
+                hint: const Text('Selecione o país'),
+                items: _paises.map((pais) {
+                  return DropdownMenuItem(
+                    value: pais['codigo'],
+                    child: Text('${pais['codigo']} (${pais['nome']})'),
+                  );
+                }).toList(),
+                onChanged: (v) => setState(() {
+                  _paisSelecionado = v;
+                  _estadoSelecionado = null;
+                }),
+                validator: (v) => v == null ? 'Obrigatório' : null,
+              ),
+              const SizedBox(height: 16),
+
+              //ESTADO
+              DropdownButtonFormField<String>(
+                initialValue: _estadoSelecionado,
+                decoration: const InputDecoration(
+                  labelText: 'Estado',
+                  border: OutlineInputBorder(),
+                ),
+                hint: const Text('Selecione o estado'),
+                items: (_estadoPorPais[_paisSelecionado] ?? []).map((estado) {
+                  return DropdownMenuItem(value: estado, child: Text(estado));
+                }).toList(),
+                onChanged: _paisSelecionado == 'BR'
+                    ? (v) => setState(() => _estadoSelecionado = v)
+                    : null,
+                validator: (v) => _paisSelecionado == 'BR' && v == null
+                    ? 'Obrigatório'
+                    : null,
+              ),
+              const SizedBox(height: 16),
+
+              //Cidade
+              TextFormField(
+                controller: _cidadeController,
+                decoration: const InputDecoration(
+                  labelText: 'Cidade',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => v!.trim().isEmpty ? 'Obrigatório' : null,
+              ),
+              const SizedBox(height: 16),
+
+              //BAIRRO
               TextFormField(
                 controller: _bairroController,
                 decoration: const InputDecoration(
@@ -151,6 +266,30 @@ class _PerfilPageState extends State<PerfilPage> {
                 ),
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
               ),
+              const SizedBox(height: 16),
+
+              //RUA
+              TextFormField(
+                controller: _ruaController,
+                decoration: const InputDecoration(
+                  labelText: 'Rua',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => v!.trim().isEmpty ? 'Obrigatório' : null,
+              ),
+              const SizedBox(height: 16),
+              //NUMERO
+              TextFormField(
+                controller: _numeroController,
+                decoration: const InputDecoration(
+                  labelText: 'Numero',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
+              ),
+
+              //CELULAR
               const SizedBox(height: 16),
               TextFormField(
                 controller: _celularcontroller,
@@ -166,6 +305,8 @@ class _PerfilPageState extends State<PerfilPage> {
                   return null;
                 },
               ),
+
+              //GENERO
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 initialValue: _genero,
@@ -180,6 +321,74 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v == null ? 'Selecione um gênero' : null,
               ),
               const SizedBox(height: 30),
+
+              //ROLE
+              DropdownButtonFormField<String>(
+                initialValue: _role,
+                decoration: const InputDecoration(
+                  labelText: 'tipo de conta',
+                  border: OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(value: '0', child: Text('Cliente')),
+                  DropdownMenuItem(value: '1', child: Text('Prestador')),
+                ],
+                onChanged: (v) => setState(() => _role = v),
+                validator: (v) => v == null ? 'Selecione uma opção' : null,
+              ),
+              const SizedBox(height: 16),
+              if (_role == "1")
+                //CATEGOR
+                DropdownButtonFormField<String>(
+                  initialValue: _categor,
+                  decoration: const InputDecoration(
+                    labelText: 'Categorias Prestadas',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: Provider.of<Categorlist>(context, listen: false)
+                      .categories
+                      .map(
+                        (cat) => DropdownMenuItem(
+                          value: cat.id,
+                          child: Text(cat.name!),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() {
+                    _categor = v;
+                    _selectedCategor.add(_categor!);
+                  }),
+                  validator: (v) => v == null ? 'Selecione uma opção' : null,
+                ),
+              const SizedBox(height: 16),
+              if (_role == "1" && _selectedCategor.length > 0)
+                //CATEGOR
+                DropdownButtonFormField<String>(
+                  initialValue: _categorSecond,
+                  decoration: const InputDecoration(
+                    labelText: 'Categorias Prestadas',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: Provider.of<Categorlist>(context, listen: false)
+                      .categories
+                      .map(
+                        (cat) => DropdownMenuItem(
+                          value: cat.id,
+                          child: Text(cat.name!),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() {
+                    _categorSecond = v;
+                  }),
+                  onSaved: (v) {
+                    _selectedCategor.clear();
+                    _selectedCategor
+                      ..add(v!)
+                      ..add(_categor!);
+                  },
+                  validator: (v) => v == null ? 'Selecione uma opção' : null,
+                ),
 
               SizedBox(
                 width: double.infinity,

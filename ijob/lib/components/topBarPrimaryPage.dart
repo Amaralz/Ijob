@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Entities/profileUser.dart';
+import 'package:ijob/Entities/profileUserList.dart';
+import 'package:provider/provider.dart';
 
 class topBarPrimaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Profileuser user = Provider.of<Profileuserlist>(context).profile;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -37,7 +41,7 @@ class topBarPrimaryPage extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      " Seu nome",
+                      user.nome!,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

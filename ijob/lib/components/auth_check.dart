@@ -1,34 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Entities/profileUserList.dart';
+import 'package:ijob/Entities/servicerList.dart';
+import 'package:ijob/Entities/userRole.dart';
 import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
+import 'package:ijob/pages/tabsServicer.dart';
 import 'package:ijob/services/auth_services.dart';
 import 'package:provider/provider.dart';
 import 'package:ijob/pages/login_component.dart';
 
-class AuthCheck extends StatelessWidget {
+class AuthCheck extends StatefulWidget {
   AuthCheck({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Future<bool> _perfilExiste(String? userId) async {
-      if (userId == null) return false;
+  State<AuthCheck> createState() => _AuthCheckState();
+}
+
+class _AuthCheckState extends State<AuthCheck> {
+  Future<int> _perfilExiste(String? userId) async {
+    if (userId == null) return -1;
+
+    final user = context.read<AuthService>().usuario;
+    if (user == null) return -1;
+
+    final profileUser = Provider.of<Profileuserlist>(context, listen: false);
+    final servicer = Provider.of<Servicerlist>(context, listen: false);
+    Userrole role = Provider.of<Userrole>(context, listen: false);
+
+    try {
+      await profileUser.loadProfileUser(user);
+      if (role.isServicer) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            role.toggleMode();
+          }
+        });
+      }
+      return 0;
+    } catch (eUser) {
       try {
-        final perfil = Provider.of<Profileuserlist>(
-          context,
-          listen: false,
-        ).searchProfiler(userId);
-        if (perfil == null) {
-          return false;
-        } else {
-          return true;
+        await servicer.loadServicerUser(user);
+        if (role.isUsu) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              role.toggleMode();
+            }
+          });
         }
-      } catch (e) {
-        print('Erro ao verificar perfil: $e');
-        return false;
+        return 1;
+      } catch (eServicer) {
+        return -1;
       }
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Consumer<AuthService>(
       builder: (context, auth, child) {
         if (auth.isLoading) {
@@ -40,19 +67,36 @@ class AuthCheck extends StatelessWidget {
         if (auth.usuario == null) {
           return const LoginComponent();
         }
-        final userId = auth.usuario!.uid;
-        return FutureBuilder<bool>(
-          future: _perfilExiste(userId),
+        return FutureBuilder<int>(
+          future: _perfilExiste(auth.usuario!.uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-            if (snapshot.hasData && !snapshot.data!) {
+            if (snapshot.hasError || !snapshot.hasData || snapshot.data == -1) {
               return const PerfilPage();
             }
-            return Tabspage();
+            final profileType = snapshot.data;
+            final role = Provider.of<Userrole>(context, listen: false);
+            if (profileType == 0) {
+              if (!role.isUsu) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) role.toggleMode();
+                });
+              }
+              return Tabspage();
+            } else if (profileType == 1) {
+              if (role.isUsu) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) role.toggleMode();
+                });
+              }
+              return Tabsservicer();
+            } else {
+              return PerfilPage();
+            }
           },
         );
       },
