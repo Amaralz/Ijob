@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/categorList.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 class Servicerlisttile extends StatelessWidget {
@@ -40,11 +40,7 @@ class Servicerlisttile extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 10.0),
                 child: CircleAvatar(
                   radius: 30,
-                  backgroundImage: servicer!.url == null
-                      ? NetworkImage(
-                          "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg",
-                        )
-                      : NetworkImage(servicer!.url!),
+                  backgroundImage: NetworkImage(servicer!.url!),
                 ),
               ),
               Column(

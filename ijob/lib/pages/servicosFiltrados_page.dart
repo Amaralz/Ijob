@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/categoryListServices.dart';
 import 'package:ijob/Components/searchServicesBar.dart';
-import 'package:ijob/Entities/categor.dart';
+import 'package:ijob/Core/Entities/categor.dart';
 
 class ServicosfiltradosPage extends StatefulWidget {
   @override

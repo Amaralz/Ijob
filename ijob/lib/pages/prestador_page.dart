@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ijob/Entities/categorList.dart';
-import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:ijob/pages/mapPage.dart';
-import 'package:ijob/utils/icnoMap.dart';
+import 'package:ijob/Core/utils/icnoMap.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 

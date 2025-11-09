@@ -1,4 +1,4 @@
-import 'package:ijob/Entities/address.dart';
+import 'package:ijob/Core/Entities/address.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Servicer {
@@ -13,7 +13,7 @@ class Servicer {
   final double rating;
   final int role;
 
-  Servicer({
+  const Servicer({
     required this.id,
     required this.nome,
     required this.category,

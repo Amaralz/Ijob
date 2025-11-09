@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/profileUserList.dart';
-import 'package:ijob/Entities/servicerList.dart';
-import 'package:ijob/Entities/userRole.dart';
+import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
 import 'package:ijob/pages/tabsServicer.dart';
-import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/Core/services/auth_services.dart';
 import 'package:provider/provider.dart';
 import 'package:ijob/pages/login_component.dart';
 
@@ -57,11 +57,10 @@ class _AuthCheckState extends State<AuthCheck> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthService>(
+      child: const Scaffold(body: Center(child: CircularProgressIndicator())),
       builder: (context, auth, child) {
         if (auth.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return child!;
         }
 
         if (auth.usuario == null) {
@@ -71,9 +70,7 @@ class _AuthCheckState extends State<AuthCheck> {
           future: _perfilExiste(auth.usuario!.uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
+              return child!;
             }
             if (snapshot.hasError || !snapshot.hasData || snapshot.data == -1) {
               return const PerfilPage();

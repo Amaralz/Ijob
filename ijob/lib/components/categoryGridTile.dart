@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/utils/icnoMap.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:ijob/Core/Entities/categor.dart';
+import 'package:ijob/Core/utils/icnoMap.dart';
+import 'package:ijob/Core/utils/routes.dart';
 
 class Categorygridtile extends StatelessWidget {
   final Categor? categoria;

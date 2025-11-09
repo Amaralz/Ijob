@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ijob/Entities/address.dart';
+import 'package:ijob/Core/Entities/address.dart';
 
 class Profileuser {
   final String? id;

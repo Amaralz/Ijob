@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/side_bar.dart';
-import 'package:ijob/Entities/servicerList.dart';
-import 'package:ijob/Entities/userRole.dart';
+import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/pages/chatsPage.dart';
 import 'package:ijob/pages/dashboardPage.dart';
-import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/Core/services/auth_services.dart';
 import 'package:provider/provider.dart';
 
 class Tabsservicer extends StatefulWidget {

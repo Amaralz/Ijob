@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/servicerListTile.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/Entities/servicerList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/Entities/servicerList.dart';
 import 'package:provider/provider.dart';
 
 class Listservices extends StatelessWidget {

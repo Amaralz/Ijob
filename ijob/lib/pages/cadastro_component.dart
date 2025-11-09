@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
-import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/Core/services/auth_services.dart';
 
 class CadastroComponent extends StatefulWidget {
   const CadastroComponent({super.key});

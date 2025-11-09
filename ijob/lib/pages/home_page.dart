@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ijob/Components/categoryGridPrimaryPage.dart';
 import 'package:ijob/Components/topBarPrimaryPage.dart';
 import 'package:ijob/Components/topServicersList.dart';
-import 'package:ijob/Entities/categorList.dart';
+import 'package:ijob/Core/Entities/categorList.dart';
 import 'package:ijob/components/side_bar.dart';
 import 'package:provider/provider.dart';
 

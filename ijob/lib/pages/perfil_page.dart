@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ijob/Entities/address.dart';
-import 'package:ijob/Entities/categorList.dart';
-import 'package:ijob/Entities/profileUser.dart';
-import 'package:ijob/Entities/profileUserList.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/Entities/servicerList.dart';
-import 'package:ijob/data/addressData.dart';
-import 'package:ijob/services/auth_services.dart';
-import 'package:ijob/utils/locationUtil.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:ijob/Core/Entities/address.dart';
+import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/Entities/profileUser.dart';
+import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/data/addressData.dart';
+import 'package:ijob/Core/services/auth_services.dart';
+import 'package:ijob/Core/utils/locationUtil.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
@@ -36,6 +36,8 @@ class _PerfilPageState extends State<PerfilPage> {
   String? _categor;
   String? _categorSecond;
   List<String> _selectedCategor = [];
+  String _standardUrl =
+      "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg";
 
   final _paises = paises;
   final _estadoPorPais = estadoPorPais;
@@ -115,6 +117,7 @@ class _PerfilPageState extends State<PerfilPage> {
           endereco: endereco,
           celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
           role: decider,
+          url: _standardUrl,
           rating: 5.0,
         );
         await Provider.of<Servicerlist>(
@@ -389,6 +392,7 @@ class _PerfilPageState extends State<PerfilPage> {
                   },
                   validator: (v) => v == null ? 'Selecione uma opção' : null,
                 ),
+              const SizedBox(height: 16),
 
               SizedBox(
                 width: double.infinity,

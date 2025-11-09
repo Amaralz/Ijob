@@ -7,7 +7,7 @@ class AuthException implements Exception {
 }
 
 class AuthService extends ChangeNotifier {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   User? usuario;
   bool isLoading = true;
 
@@ -19,19 +19,16 @@ class AuthService extends ChangeNotifier {
     _auth.authStateChanges().listen((User? user) {
       usuario = user;
       isLoading = false;
-      print('authStateChanges: usuário = ${user?.email}, isLoading = false');
-      Future.microtask(() => notifyListeners());
+      notifyListeners();
     });
   }
 
   Future<void> login(String email, String password) async {
     try {
       setStateLoading(true);
-      print('Tentando login com $email');
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .timeout(const Duration(seconds: 10));
-      print('Login bem sucedido');
     } on FirebaseAuthException catch (e) {
       setStateLoading(false);
       String message;
@@ -50,7 +47,6 @@ class AuthService extends ChangeNotifier {
       }
       throw AuthException(message);
     } catch (e) {
-      print('Erro no login: $e');
       setStateLoading(false);
       throw AuthException('Erro inesperado ao fazer login: $e');
     }

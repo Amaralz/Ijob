@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/profileUser.dart';
-import 'package:ijob/Entities/profileUserList.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/Entities/servicerList.dart';
-import 'package:ijob/Entities/userRole.dart';
-import 'package:ijob/services/auth_services.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:ijob/Core/Entities/profileUser.dart';
+import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
+import 'package:ijob/Core/services/auth_services.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget {
@@ -76,7 +76,6 @@ class _SidebarState extends State<Sidebar> {
   Widget build(BuildContext context) {
     final role = Provider.of<Userrole>(context);
     final auth = Provider.of<AuthService>(context);
-    print(role.isUsu);
     return Drawer(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

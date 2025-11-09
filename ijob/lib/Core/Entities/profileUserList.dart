@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/profileUser.dart';
+import 'package:ijob/Core/Entities/profileUser.dart';
 
 class Profileuserlist extends ChangeNotifier {
   Profileuser? _profile;

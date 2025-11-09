@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/Entities/servicer.dart';
+import 'package:ijob/Core/Entities/categor.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Servicerlist extends ChangeNotifier {

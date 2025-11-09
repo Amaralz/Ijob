@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/utils/urls.dart';
+import 'package:ijob/Core/Entities/categor.dart';
+import 'package:ijob/Core/utils/urls.dart';
 
 class Categorlist extends ChangeNotifier {
   final List<Categor> _categories = [];

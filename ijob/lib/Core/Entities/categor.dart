@@ -3,5 +3,5 @@ class Categor {
   final String? name;
   final String? icon;
 
-  Categor({required this.id, required this.name, this.icon});
+  const Categor({required this.id, required this.name, this.icon});
 }

@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/auth_check.dart';
-import 'package:ijob/Entities/categorList.dart';
-import 'package:ijob/Entities/profileUserList.dart';
-import 'package:ijob/Entities/servicerList.dart';
-import 'package:ijob/Entities/userRole.dart';
+import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/pages/chatsPage.dart';
 import 'package:ijob/pages/configuracoes_page.dart';
 import 'package:ijob/pages/notificacao_page.dart';
@@ -12,12 +12,12 @@ import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/prestador_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
 import 'package:ijob/pages/tabsServicer.dart';
-import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/Core/services/auth_services.dart';
 import 'package:provider/provider.dart';
 import 'pages/login_component.dart';
 import 'pages/cadastro_component.dart';
 import 'pages/servicosFiltrados_page.dart';
-import 'utils/routes.dart';
+import 'Core/utils/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
