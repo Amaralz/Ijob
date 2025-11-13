@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/Entities/chat.dart';
+import 'package:ijob/Core/Entities/profileUser.dart';
+import 'package:ijob/Core/Entities/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/services/chat/chatServices.dart';
 import 'package:ijob/pages/mapPage.dart';
 import 'package:ijob/Core/utils/icnoMap.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 
 class Prestadorpage extends StatelessWidget {
   Future<LatLng> getUserPosition() async {
@@ -13,9 +18,84 @@ class Prestadorpage extends StatelessWidget {
     return LatLng(position.latitude!, position.longitude!);
   }
 
+  Future<void> _createNewChat(
+    BuildContext context,
+    Servicer servicer,
+    Profileuser user,
+  ) async {
+    if (user.id == null || servicer.id == null) return;
+
+    bool? check = await Chatservices().checkExistingChat(user.id, servicer.id);
+
+    if (check == true) {
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.minimal,
+        title: Text(
+          "Conversa já existe",
+          style: TextStyle(color: Colors.white),
+        ),
+        description: Text(
+          "Conversa com ${servicer.nome} já está em suas conversas!",
+          style: TextStyle(color: Colors.white),
+        ),
+        alignment: Alignment.topCenter,
+        autoCloseDuration: const Duration(seconds: 4),
+        animationBuilder: (context, animation, alignment, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        primaryColor: Colors.red,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.black,
+        icon: Icon(Icons.message),
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: lowModeShadow,
+      );
+    } else {
+      try {
+        await Chatservices().createChat(
+          Chat(
+            createdAt: DateTime.now(),
+            id: '',
+            participants: [servicer.id!, user.id!],
+            servicerName: servicer.nome!,
+            userName: user.nome!,
+            situation: "Ativa",
+          ),
+        );
+      } catch (error) {
+        throw "Erro inesperado ao juntar dados para criação do chat";
+      }
+
+      toastification.show(
+        context: context,
+        type: ToastificationType.success,
+        style: ToastificationStyle.minimal,
+        title: Text("Conversa criada!", style: TextStyle(color: Colors.white)),
+        description: Text(
+          "Conversa com ${servicer.nome} foi adicionada à conversas",
+          style: TextStyle(color: Colors.white),
+        ),
+        alignment: Alignment.topCenter,
+        autoCloseDuration: const Duration(seconds: 4),
+        animationBuilder: (context, animation, alignment, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        primaryColor: Theme.of(context).secondaryHeaderColor,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.black,
+        icon: Icon(Icons.message),
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: lowModeShadow,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final catProvider = Provider.of<Categorlist>(context);
+    final user = Provider.of<Profileuserlist>(context).profile;
 
     Icon corvertIcon(String iconName) {
       IconData iconData = Icnomap.getIconData(iconName);
@@ -119,7 +199,9 @@ class Prestadorpage extends StatelessWidget {
             ),
             backgroundColor: Theme.of(context).secondaryHeaderColor,
           ),
-          onPressed: () {},
+          onPressed: () async {
+            return await _createNewChat(context, servicer, user);
+          },
           child: Text(
             "Iniciar Pedido",
             style: TextStyle(color: Theme.of(context).primaryColor),

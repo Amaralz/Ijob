@@ -1,11 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
 import 'package:ijob/pages/tabsServicer.dart';
-import 'package:ijob/Core/services/auth_services.dart';
+import 'package:ijob/Core/services/auth/authServices.dart';
 import 'package:provider/provider.dart';
 import 'package:ijob/pages/login_component.dart';
 
@@ -17,40 +16,26 @@ class AuthCheck extends StatefulWidget {
 }
 
 class _AuthCheckState extends State<AuthCheck> {
-  Future<int> _perfilExiste(String? userId) async {
-    if (userId == null) return -1;
-
+  Future<int> _perfilExiste() async {
     final user = context.read<AuthService>().usuario;
     if (user == null) return -1;
 
-    final profileUser = Provider.of<Profileuserlist>(context, listen: false);
-    final servicer = Provider.of<Servicerlist>(context, listen: false);
-    Userrole role = Provider.of<Userrole>(context, listen: false);
-
     try {
-      await profileUser.loadProfileUser(user);
-      if (role.isServicer) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            role.toggleMode();
-          }
-        });
-      }
-      return 0;
-    } catch (eUser) {
-      try {
-        await servicer.loadServicerUser(user);
-        if (role.isUsu) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              role.toggleMode();
-            }
-          });
-        }
-        return 1;
-      } catch (eServicer) {
-        return -1;
-      }
+      final profiler = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (!profiler.exists) return -1;
+
+      final role = profiler.data()?['role'];
+
+      if (role == 0) return 0;
+      if (role == 1) return 1;
+
+      return -1;
+    } catch (error) {
+      return -1;
     }
   }
 
@@ -67,7 +52,7 @@ class _AuthCheckState extends State<AuthCheck> {
           return const LoginComponent();
         }
         return FutureBuilder<int>(
-          future: _perfilExiste(auth.usuario!.uid),
+          future: _perfilExiste(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return child!;

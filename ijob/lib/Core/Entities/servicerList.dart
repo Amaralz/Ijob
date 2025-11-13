@@ -5,7 +5,7 @@ import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Servicerlist extends ChangeNotifier {
-  final _db = FirebaseFirestore.instance.collection("servicer");
+  final _db = FirebaseFirestore.instance.collection("users");
   List<Servicer> _servicers = [];
 
   Servicer? _servicerUser;
@@ -55,7 +55,7 @@ class Servicerlist extends ChangeNotifier {
   Future<void> loadServicers() async {
     _servicers.clear();
     try {
-      final query = await _db.get();
+      final query = await _db.where('role', isEqualTo: 1).get();
       _servicers = query.docs
           .map((serv) => Servicer.fromSnapshot(serv))
           .toList();
@@ -107,7 +107,7 @@ class Servicerlist extends ChangeNotifier {
       await docRef.set(servicer.toJson());
       _servicers.add(servicer);
     } catch (e) {
-      print(response);
+      throw response;
     }
     notifyListeners();
   }

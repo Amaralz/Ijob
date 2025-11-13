@@ -5,14 +5,16 @@ import 'package:ijob/Core/Entities/categorList.dart';
 import 'package:ijob/Core/Entities/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
+import 'package:ijob/Core/services/chat/chatServices.dart';
 import 'package:ijob/pages/chatsPage.dart';
 import 'package:ijob/pages/configuracoes_page.dart';
+import 'package:ijob/pages/innerChatPage.dart';
 import 'package:ijob/pages/notificacao_page.dart';
 import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/prestador_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
 import 'package:ijob/pages/tabsServicer.dart';
-import 'package:ijob/Core/services/auth_services.dart';
+import 'package:ijob/Core/services/auth/authServices.dart';
 import 'package:provider/provider.dart';
 import 'pages/login_component.dart';
 import 'pages/cadastro_component.dart';
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Profileuserlist()),
         ChangeNotifierProvider(create: (_) => Servicerlist()),
         ChangeNotifierProvider(create: (_) => Categorlist()),
+        ChangeNotifierProvider(create: (_) => Chatservices()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -68,6 +71,7 @@ class MyApp extends StatelessWidget {
           Routes.PRESTADOR: (context) => Prestadorpage(),
           Routes.CHAT: (context) => Chatspage(),
           Routes.PERFIL: (context) => PerfilPage(),
+          Routes.INNERCHAT: (context) => Innerchatpage(),
         },
       ),
     );

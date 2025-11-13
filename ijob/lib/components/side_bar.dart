@@ -4,7 +4,7 @@ import 'package:ijob/Core/Entities/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:ijob/Core/Entities/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
-import 'package:ijob/Core/services/auth_services.dart';
+import 'package:ijob/Core/services/auth/authServices.dart';
 import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
 

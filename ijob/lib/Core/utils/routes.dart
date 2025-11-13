@@ -11,4 +11,5 @@ class Routes {
   static const AUTHCHECK = '/auth_check';
   static const CHAT = '/chat';
   static const SERVICERHOME = '/servicerhome';
+  static const INNERCHAT = '/innerchat';
 }
