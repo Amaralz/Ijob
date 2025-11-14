@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/services/auth_services.dart';
 import 'package:ijob/services/database_helper.dart';
+import 'package:ijob/services/perfil_provider.dart';
 import 'package:provider/provider.dart';
 
 class topBarPrimaryPage extends StatefulWidget {
@@ -11,32 +12,47 @@ class topBarPrimaryPage extends StatefulWidget {
 }
 
 class _topBarPrimaryPageState extends State<topBarPrimaryPage> {
-  String _genero = 'M';
-  String _nome = 'carregando...';
-
   @override
   void initState() {
     super.initState();
-    _carregarPerfil();
-  }
-
-  Future<void> _carregarPerfil() async {
-    final user = Provider.of<AuthService>(context, listen: false).usuario;
-    if (user != null) {
-      final perfil = await DatabaseHelper().buscarPerfil(user.uid);
-      if (perfil != null && mounted) {
-        setState(() {
-          _nome = perfil['nome'] ?? 'Usuário';
-          _genero = perfil['genero'] ?? 'M';
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final saudacao = _genero == 'Feminino' ? 'bem-vinda!' : 'Bem-vindo!';
+    return Consumer<PerfilProvider>(
+      builder: (context, perfilProvider, child) {
+        if (perfilProvider.isLoading) {
+          return _buildLoading();
+        }
 
+        final perfil = perfilProvider.perfil;
+        final nome = perfil?['nome'] ?? 'Usuário';
+        final genero = perfil?['genero'] ?? 'M';
+        final saudacao = genero == 'Feminino' ? 'bem-vinda!' : 'Bem-vindo!';
+
+        return _buildTopBar(saudacao, nome);
+      },
+    );
+  }
+
+  Widget _buildLoading() {
+    return Container(
+      height: 130,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color.fromARGB(255, 20, 20, 20),
+        boxShadow: [
+          BoxShadow(color: Colors.black, spreadRadius: 1, blurRadius: 6),
+        ],
+      ),
+      child: Center(
+        child: Text('Carregando...', style: TextStyle(color: Colors.white)),
+      ),
+    );
+  }
+
+  Widget _buildTopBar(String saudacao, String nome) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
@@ -48,12 +64,12 @@ class _topBarPrimaryPageState extends State<topBarPrimaryPage> {
       ),
       height: 130,
       child: Row(
-        children: <Widget>[
+        children: [
           Padding(
             padding: const EdgeInsets.all(7.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: [
                 Container(
                   width: 370,
                   height: 100,
@@ -71,10 +87,7 @@ class _topBarPrimaryPageState extends State<topBarPrimaryPage> {
                         color: Colors.white,
                       ),
                     ),
-                    subtitle: Text(
-                      _nome,
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    subtitle: Text(nome, style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/services/auth_services.dart';
 import 'package:ijob/services/database_helper.dart';
+import 'package:ijob/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget {
@@ -12,18 +13,23 @@ class Sidebar extends StatefulWidget {
 
 class _SidebarState extends State<Sidebar> {
   String _nome = 'Carregando..';
+  int _selectedIndex = 0;
 
   Future<void> _carregarNome() async {
+    if (!mounted) return;
+
     final user = Provider.of<AuthService>(context, listen: false).usuario;
+
     if (user != null) {
       final perfil = await DatabaseHelper().buscarPerfil(user.uid);
-      if (perfil != null && mounted) {
-        setState(() => _nome = perfil['nome']);
+
+      if (mounted && perfil != null) {
+        setState(() {
+          _nome = perfil['nome'] ?? 'Usuário';
+        });
       }
     }
   }
-
-  int _selectedIndex = 0;
 
   void _navigateAndSelect(BuildContext context, int index, String route) {
     if (ModalRoute.of(context)?.settings.name == route) {
@@ -41,18 +47,31 @@ class _SidebarState extends State<Sidebar> {
   void initState() {
     super.initState();
     Future.microtask(() => _carregarNome());
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentRoute = ModalRoute.of(context)?.settings.name;
+      if (!mounted) return;
+
       setState(() {
-        if (currentRoute == '/homepage') {
-          _selectedIndex = 0;
-        } else if (currentRoute == '/servicos') {
-          _selectedIndex = 1;
-        } else if (currentRoute == '/notificacao') {
-          _selectedIndex = 2;
-        }
+        _selectedIndex = switch (currentRoute) {
+          Routes.HOME => 0,
+          Routes.EDITARPERFIL => 1,
+          Routes.NOTIFICACOES => 2,
+          Routes.DASHBOARDCONTRATANTES => 3,
+          _ => 0,
+        };
       });
     });
+  }
+
+  void _onItemTapped(int index, String route) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    Navigator.pop(context);
+    if (ModalRoute.of(context)?.settings.name != route) {
+      Navigator.pushNamed(context, route);
+    }
   }
 
   @override
@@ -82,16 +101,20 @@ class _SidebarState extends State<Sidebar> {
             title: const Text("Home"),
             selected: _selectedIndex == 0,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 0, '/homepage'),
+            onTap: () => _navigateAndSelect(context, 0, Routes.HOME),
           ),
 
-          //botão serviços
+          //botão perfil
           ListTile(
-            leading: const Icon(Icons.build),
-            title: const Text('serviços'),
+            leading: const Icon(Icons.account_box),
+            title: const Text('Perfil'),
             selected: _selectedIndex == 1,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 1, '/servicos'),
+            onTap: () async {
+              setState(() => _selectedIndex = 1);
+              Navigator.pop(context);
+              Navigator.pushNamed(context, Routes.EDITARPERFIL);
+            },
           ),
 
           //botão notificação
@@ -100,30 +123,35 @@ class _SidebarState extends State<Sidebar> {
             title: const Text('notificações'),
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 2, '/notificacao'),
+            onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
           ),
 
           // Expansion Item (adicionado após o último ListTile)
           ExpansionTile(
             leading: const Icon(Icons.filter_b_and_w_outlined),
             title: const Text('Mais'),
+            initiallyExpanded: _selectedIndex >= 3,
             onExpansionChanged: (expanded) {
-              print('Expansion Item expanded: $expanded');
+              if (!expanded && _selectedIndex >= 3) {
+                setState(() => _selectedIndex = 0);
+              }
             },
 
             children: [
-              // Subitem 1
+              // Subitem Dashboard
               ListTile(
                 leading: const Icon(Icons.home, size: 20),
                 title: const Text('Dashboard'),
-                selected: _selectedIndex == 3,
-                selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+                tileColor: _selectedIndex == 3
+                    ? Colors.blue.withOpacity(0.1)
+                    : null,
                 onTap: () {
-                  setState(() {
-                    _selectedIndex = 3;
-                  });
+                  setState(() => _selectedIndex = 3);
                   Navigator.pop(context);
-                  print('Expansion Item 1 tapped');
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(Routes.DASHBOARDCONTRATANTES);
                 },
               ),
 
@@ -143,6 +171,7 @@ class _SidebarState extends State<Sidebar> {
               ),
             ],
           ),
+          //LOGOUT
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: OutlinedButton(

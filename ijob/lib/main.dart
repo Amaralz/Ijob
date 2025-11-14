@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:ijob/Entities/categorList.dart';
 import 'package:ijob/Entities/servicerList.dart';
 import 'package:ijob/pages/configuracoes_page.dart';
+import 'package:ijob/pages/dashboard_contratante.dart';
+import 'package:ijob/pages/editar_perfil_page.dart';
 import 'package:ijob/pages/notificacao_page.dart';
 import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/prestador_page.dart';
@@ -10,8 +12,10 @@ import 'package:ijob/pages/servicosFiltrados_page.dart';
 import 'package:ijob/pages/servicos_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
 import 'package:ijob/services/database_helper.dart';
+import 'package:ijob/services/perfil_provider.dart';
 import 'package:ijob/utils/routes.dart';
 import 'package:ijob/widgets/auth_check.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'services/auth_services.dart';
 //import 'package:ijob/pages/home_page.dart';
@@ -20,6 +24,7 @@ import 'pages/cadastro_component.dart';
 import 'pages/home_page.dart';
 
 void main() async {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await DatabaseHelper().database;
@@ -32,9 +37,11 @@ void main() async {
         ChangeNotifierProvider.value(value: authService),
         ChangeNotifierProvider(create: (_) => Servicerlist()),
         ChangeNotifierProvider(create: (_) => Categorlist()),
+        ChangeNotifierProvider(create: (_) => PerfilProvider()),
       ],
 
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'Ijob',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -55,10 +62,13 @@ void main() async {
           Routes.CADASTRO: (context) => CadastroComponent(),
           Routes.PERFIL: (context) => const PerfilPage(),
           Routes.HOME: (context) => Tabspage(),
+          Routes.SERVICOS: (context) => ServicosPage(),
           Routes.SERVICOSFILTRADOS: (context) => ServicosfiltradosPage(),
           Routes.PRESTADOR: (context) => Prestadorpage(),
           Routes.CONFIGURACOES: (context) => ConfiguracoesPage(),
           Routes.NOTIFICACOES: (context) => NotificacaoPage(),
+          Routes.DASHBOARDCONTRATANTES: (context) => DashboardContratante(),
+          Routes.EDITARPERFIL: (context) => EditarPerfilPage(),
         },
       ),
     ),

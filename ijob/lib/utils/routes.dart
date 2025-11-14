@@ -11,4 +11,6 @@ class Routes {
   static const PRESTADOR = '/prestador';
   static const PERFIL = '/perfil';
   static const AUTHCHECK = '/auth_check';
+  static const DASHBOARDCONTRATANTES = '\dashboardcontratantes';
+  static const EDITARPERFIL = '/editarperfil';
 }

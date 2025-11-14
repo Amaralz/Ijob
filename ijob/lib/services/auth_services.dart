@@ -10,6 +10,13 @@ class AuthService extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? usuario;
   bool isLoading = true;
+  bool _pendingDelete = false;
+  bool get pendingDelete => _pendingDelete;
+
+  void setPendingDelete(bool value) {
+    _pendingDelete = value;
+    notifyListeners();
+  }
 
   AuthService() {
     _authCheck();
