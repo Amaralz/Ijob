@@ -245,7 +245,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v == null ? 'Obrigatório' : null,
               ),
               const SizedBox(height: 16),
-              //CIDADE
+              //ESTADO
               DropdownButtonFormField<String>(
                 value: _estadoSelecionado,
                 decoration: const InputDecoration(
@@ -262,6 +262,16 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => _paisSelecionado == 'BR' && v == null
                     ? 'Obrigatório'
                     : null,
+              ),
+              const SizedBox(height: 16),
+              //CIDADE
+              TextFormField(
+                controller: _cidadeController,
+                decoration: const InputDecoration(
+                  labelText: 'Cidade',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => v!.trim().isEmpty ? 'Obrigatório' : null,
               ),
               const SizedBox(height: 16),
               //BAIRRO
