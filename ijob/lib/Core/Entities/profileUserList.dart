@@ -56,10 +56,20 @@ class Profileuserlist extends ChangeNotifier {
     }
   }
 
+  final Map<String, Profileuser> _profilerCache = {};
+
   Future<Profileuser?> getProfile(String uid) async {
+    if (_profilerCache.containsKey(uid)) {
+      return _profilerCache[uid];
+    }
+
     try {
       final query = await _db.doc(uid).get();
-      return await Profileuser.fromSnapshot(query);
+      Profileuser profile = Profileuser.fromSnapshot(query);
+
+      _profilerCache[uid] = profile;
+
+      return profile;
     } catch (e) {
       print("ERROOOOOOOOO");
       return null;

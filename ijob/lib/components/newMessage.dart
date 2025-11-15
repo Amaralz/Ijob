@@ -36,6 +36,10 @@ class _NewmessageState extends State<Newmessage> {
         ),
       );
       _controller.clear();
+
+      setState(() {
+        _enterMessage = '';
+      });
     }
   }
 

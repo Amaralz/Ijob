@@ -4,7 +4,6 @@ class Chatmessage {
   final String id;
   final String text;
   final DateTime createdAt;
-
   final String userId;
 
   const Chatmessage({

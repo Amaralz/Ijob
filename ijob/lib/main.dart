@@ -6,10 +6,13 @@ import 'package:ijob/Core/Entities/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/chat/chatServices.dart';
+import 'package:ijob/Core/services/chat/requestMessageServices.dart';
+import 'package:ijob/Core/services/order/orderServicer.dart';
 import 'package:ijob/pages/chatsPage.dart';
 import 'package:ijob/pages/configuracoes_page.dart';
 import 'package:ijob/pages/innerChatPage.dart';
 import 'package:ijob/pages/notificacao_page.dart';
+import 'package:ijob/pages/ordersPage.dart';
 import 'package:ijob/pages/perfil_page.dart';
 import 'package:ijob/pages/prestador_page.dart';
 import 'package:ijob/pages/tabsPage.dart';
@@ -20,10 +23,12 @@ import 'pages/login_component.dart';
 import 'pages/cadastro_component.dart';
 import 'pages/servicosFiltrados_page.dart';
 import 'Core/utils/routes.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await initializeDateFormatting('pt_BR', null);
   runApp(MyApp());
 }
 
@@ -39,6 +44,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Servicerlist()),
         ChangeNotifierProvider(create: (_) => Categorlist()),
         ChangeNotifierProvider(create: (_) => Chatservices()),
+        ChangeNotifierProvider(create: (_) => Requestmessageservices()),
+        ChangeNotifierProvider(create: (_) => Orderservicer()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -72,6 +79,7 @@ class MyApp extends StatelessWidget {
           Routes.CHAT: (context) => Chatspage(),
           Routes.PERFIL: (context) => PerfilPage(),
           Routes.INNERCHAT: (context) => Innerchatpage(),
+          Routes.ORDERS: (context) => Orderspage(),
         },
       ),
     );

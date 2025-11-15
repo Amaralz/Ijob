@@ -7,7 +7,7 @@ class Chat {
   List<String> participants;
   DateTime createdAt;
   String situation;
-  String servicerName;
+  String servicerId;
   String userName;
   Situation _chatSituation = Situation.Ativa;
 
@@ -17,7 +17,7 @@ class Chat {
     required this.createdAt,
     required this.situation,
     required this.userName,
-    required this.servicerName,
+    required this.servicerId,
   });
 
   void finalize() {
@@ -30,7 +30,7 @@ class Chat {
       'createdAt': createdAt.toIso8601String(),
       'situation': _chatSituation == Situation.Ativa ? 'Ativo' : 'Finalizado',
       'userName': userName,
-      'servicerName': servicerName,
+      'servicerId': servicerId,
     };
   }
 
@@ -42,7 +42,7 @@ class Chat {
       createdAt: DateTime.parse(data['createdAt']),
       situation: data['situation'],
       userName: data['userName'],
-      servicerName: data['servicerName'],
+      servicerId: data['servicerId'],
     );
   }
 }

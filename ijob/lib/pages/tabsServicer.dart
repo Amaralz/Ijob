@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/side_bar.dart';
+import 'package:ijob/Core/Entities/categorList.dart';
 import 'package:ijob/Core/Entities/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/chat/chatServices.dart';
@@ -27,8 +28,10 @@ class _TabsservicerState extends State<Tabsservicer> {
     final authProvider = Provider.of<AuthService>(context, listen: false);
     final serviceProvider = Provider.of<Servicerlist>(context, listen: false);
     final chatProvider = Provider.of<Chatservices>(context, listen: false);
+    final categorProvider = Provider.of<Categorlist>(context, listen: false);
     final roleProvider = Provider.of<Userrole>(context, listen: false);
 
+    categorProvider.loadCategors();
     User? user = authProvider.usuario;
 
     if (user == null) {

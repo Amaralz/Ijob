@@ -12,4 +12,5 @@ class Routes {
   static const CHAT = '/chat';
   static const SERVICERHOME = '/servicerhome';
   static const INNERCHAT = '/innerchat';
+  static const ORDERS = '/orders';
 }

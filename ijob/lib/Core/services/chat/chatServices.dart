@@ -67,4 +67,25 @@ class Chatservices extends ChangeNotifier {
     _chats = [];
     notifyListeners();
   }
+
+  final Map<List<String>, Chat> _chatCache = {};
+
+  Future<Chat?> getChatByParticipants(List<String> participants) async {
+    if (_chatCache.containsKey(participants)) {
+      return _chatCache[participants];
+    }
+    try {
+      final query = await _db
+          .where('paticipants', isEqualTo: participants)
+          .get();
+
+      Chat chat = Chat.fromSnapshot(query.docs.first);
+
+      _chatCache[participants] = chat;
+
+      return chat;
+    } catch (error) {
+      throw 'Erro ao tentar pegar chat por participantes';
+    }
+  }
 }

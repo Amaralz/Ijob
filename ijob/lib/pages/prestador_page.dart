@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ijob/Components/toastMessage.dart';
 import 'package:ijob/Core/Entities/categorList.dart';
 import 'package:ijob/Core/Entities/chat.dart';
 import 'package:ijob/Core/Entities/profileUser.dart';
@@ -10,7 +11,6 @@ import 'package:ijob/pages/mapPage.dart';
 import 'package:ijob/Core/utils/icnoMap.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
-import 'package:toastification/toastification.dart';
 
 class Prestadorpage extends StatelessWidget {
   Future<LatLng> getUserPosition() async {
@@ -28,30 +28,12 @@ class Prestadorpage extends StatelessWidget {
     bool? check = await Chatservices().checkExistingChat(user.id, servicer.id);
 
     if (check == true) {
-      toastification.show(
-        context: context,
-        type: ToastificationType.error,
-        style: ToastificationStyle.minimal,
-        title: Text(
-          "Conversa já existe",
-          style: TextStyle(color: Colors.white),
-        ),
-        description: Text(
-          "Conversa com ${servicer.nome} já está em suas conversas!",
-          style: TextStyle(color: Colors.white),
-        ),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 4),
-        animationBuilder: (context, animation, alignment, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
+      Toastmessage(
+        title: "Conversa já existe",
+        subtitle: "Conversa com ${servicer.nome} já está em suas conversas!",
         primaryColor: Colors.red,
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.black,
         icon: Icon(Icons.message),
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: lowModeShadow,
-      );
+      ).toast(context);
     } else {
       try {
         await Chatservices().createChat(
@@ -59,7 +41,7 @@ class Prestadorpage extends StatelessWidget {
             createdAt: DateTime.now(),
             id: '',
             participants: [servicer.id!, user.id!],
-            servicerName: servicer.nome!,
+            servicerId: servicer.id!,
             userName: user.nome!,
             situation: "Ativa",
           ),
@@ -68,27 +50,12 @@ class Prestadorpage extends StatelessWidget {
         throw "Erro inesperado ao juntar dados para criação do chat";
       }
 
-      toastification.show(
-        context: context,
-        type: ToastificationType.success,
-        style: ToastificationStyle.minimal,
-        title: Text("Conversa criada!", style: TextStyle(color: Colors.white)),
-        description: Text(
-          "Conversa com ${servicer.nome} foi adicionada à conversas",
-          style: TextStyle(color: Colors.white),
-        ),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 4),
-        animationBuilder: (context, animation, alignment, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
+      Toastmessage(
+        title: "Conversa criada!",
+        subtitle: "Conversa com ${servicer.nome} foi adicionada à conversas",
         primaryColor: Theme.of(context).secondaryHeaderColor,
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.black,
         icon: Icon(Icons.message),
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: lowModeShadow,
-      );
+      ).toast(context);
     }
   }
 

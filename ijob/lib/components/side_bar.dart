@@ -67,6 +67,8 @@ class _SidebarState extends State<Sidebar> {
           _selectedIndex = 1;
         } else if (currentRoute == Routes.NOTIFICACOES) {
           _selectedIndex = 2;
+        } else if (currentRoute == Routes.ORDERS) {
+          _selectedIndex = 5;
         }
       });
     });
@@ -134,6 +136,14 @@ class _SidebarState extends State<Sidebar> {
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.view_timeline_outlined),
+            title: const Text('Pedidos'),
+            selected: _selectedIndex == 5,
+            selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+            onTap: () => _navigateAndSelect(context, 5, Routes.ORDERS),
           ),
 
           // Expansion Item (adicionado após o último ListTile)

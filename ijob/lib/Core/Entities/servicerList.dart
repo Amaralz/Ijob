@@ -59,10 +59,10 @@ class Servicerlist extends ChangeNotifier {
       _servicers = query.docs
           .map((serv) => Servicer.fromSnapshot(serv))
           .toList();
+      notifyListeners();
     } catch (e) {
       print("ERRO DETECTADO: ${e.toString()}");
     }
-    notifyListeners();
   }
 
   Future<void> loadServicerUser(User user) async {
@@ -76,10 +76,20 @@ class Servicerlist extends ChangeNotifier {
     }
   }
 
+  final Map<String, Servicer> _servicerCache = {};
+
   Future<Servicer?> getServicer(String uid) async {
+    if (_servicerCache.containsKey(uid)) {
+      return _servicerCache[uid];
+    }
+
     try {
       final query = await _db.doc(uid).get();
-      return await Servicer.fromSnapshot(query);
+      Servicer serv = Servicer.fromSnapshot(query);
+
+      _servicerCache[uid] = serv;
+
+      return serv;
     } catch (e) {
       print("ERROOOOOOOOO");
       return null;
