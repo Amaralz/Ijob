@@ -41,6 +41,7 @@ class _NewmessageState extends State<Newmessage> {
         _enterMessage = '';
       });
     }
+    if (mounted) FocusScope.of(context).unfocus();
   }
 
   @override
@@ -50,21 +51,35 @@ class _NewmessageState extends State<Newmessage> {
       children: [
         Expanded(
           child: TextField(
+            selectAllOnFocus: false,
+            autofocus: false,
             clipBehavior: Clip.antiAlias,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             controller: _controller,
+
             onChanged: (msg) {
               setState(() {
                 _enterMessage = msg;
               });
             },
-            decoration: InputDecoration(label: Text("Digite sua mensagem")),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(
+                  color: Theme.of(context).secondaryHeaderColor,
+                ),
+              ),
+              hintText: "Mensagem",
+            ),
           ),
         ),
         IconButton(
           onPressed: _enterMessage.trim().isEmpty ? null : _sendMessage,
           icon: Icon(Icons.send),
+          style: IconButton.styleFrom(
+            foregroundColor: Theme.of(context).secondaryHeaderColor,
+          ),
         ),
       ],
     );

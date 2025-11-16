@@ -21,6 +21,7 @@ class _InnerchatpageState extends State<Innerchatpage> {
   late Chat _chatInfo;
   bool _initizalized = false;
   late Future<Servicer?> _servicer;
+  late Widget _stream;
 
   @override
   void didChangeDependencies() {
@@ -39,6 +40,8 @@ class _InnerchatpageState extends State<Innerchatpage> {
         listen: false,
       ).getServicer(_chatInfo.servicerId);
 
+      _stream = Messagestream(chat: _chatInfo);
+
       _initizalized = true;
     }
   }
@@ -47,7 +50,12 @@ class _InnerchatpageState extends State<Innerchatpage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton.icon(
-        onPressed: checker ? null : () => _openResponseModal(context, request),
+        onPressed: checker
+            ? null
+            : () async {
+                await _openResponseModal(context, request);
+                if (mounted) FocusScope.of(context).unfocus();
+              },
         label: Text("Solicitações", style: TextStyle(color: Colors.black)),
         icon: Icon(Icons.visibility, color: Colors.black),
         style: ElevatedButton.styleFrom(
@@ -104,7 +112,6 @@ class _InnerchatpageState extends State<Innerchatpage> {
   @override
   Widget build(BuildContext context) {
     final role = Provider.of<Userrole>(context, listen: false);
-    final requests = Provider.of<Requestmessageservices>(context).requests;
     // TODO: implement build
     return FutureBuilder(
       future: _servicer,
@@ -119,67 +126,89 @@ class _InnerchatpageState extends State<Innerchatpage> {
                 style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
               ),
               actions: [
-                role.isUsu
-                    ? requests.isEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton.icon(
-                                onPressed: () => _openRequestModal(
-                                  context,
-                                  _chatInfo,
-                                  role,
-                                  servicer.data!,
-                                ),
-                                label: Text(
-                                  "Marcar",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                icon: Icon(
-                                  Icons.view_timeline_outlined,
-                                  color: Colors.black,
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      10,
+                Consumer<Requestmessageservices>(
+                  builder: (context, requestService, child) {
+                    final requests = requestService.requests;
+
+                    return role.isUsu
+                        ? requests.isEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      await _openRequestModal(
+                                        context,
+                                        _chatInfo,
+                                        role,
+                                        servicer.data!,
+                                      );
+                                      if (mounted) {
+                                        FocusScope.of(context).unfocus();
+                                      }
+                                    },
+                                    label: Text(
+                                      "Marcar",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    icon: Icon(
+                                      Icons.view_timeline_outlined,
+                                      color: Colors.black,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadiusGeometry.circular(10),
+                                      ),
+                                      backgroundColor: Theme.of(
+                                        context,
+                                      ).secondaryHeaderColor,
                                     ),
                                   ),
-                                  backgroundColor: Theme.of(
-                                    context,
-                                  ).secondaryHeaderColor,
-                                ),
+                                )
+                              : _showButton(requests.isEmpty, requests[0])
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton.icon(
+                              onPressed: requests.isEmpty
+                                  ? null
+                                  : () async {
+                                      await _openResponseModal(
+                                        context,
+                                        requests[0],
+                                      );
+
+                                      if (mounted) {
+                                        FocusScope.of(context).unfocus();
+                                      }
+                                    },
+                              label: Text(
+                                "Solicitações",
+                                style: TextStyle(color: Colors.black),
                               ),
-                            )
-                          : _showButton(requests.isEmpty, requests[0])
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton.icon(
-                          onPressed: requests.isEmpty
-                              ? null
-                              : () => _openResponseModal(context, requests[0]),
-                          label: Text(
-                            "Solicitações",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          icon: Icon(Icons.visibility, color: Colors.black),
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(10),
+                              icon: Icon(Icons.visibility, color: Colors.black),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    10,
+                                  ),
+                                ),
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).secondaryHeaderColor,
+                              ),
                             ),
-                            backgroundColor: Theme.of(
-                              context,
-                            ).secondaryHeaderColor,
-                          ),
-                        ),
-                      ),
+                          );
+                  },
+                ),
               ],
             ),
             body: Column(
               children: [
-                Expanded(
-                  child: Center(child: Messagestream(chat: _chatInfo)),
+                Expanded(child: Center(child: _stream)),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Newmessage(chat: _chatInfo),
                 ),
-                Newmessage(chat: _chatInfo),
               ],
             ),
           );

@@ -9,7 +9,7 @@ class Topservicerslist extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Servicer> servicers = Provider.of<Servicerlist>(
       context,
-    ).servicers;
+    ).servicers.where((serv) => serv.active == true).toList();
 
     final int count = servicers.length;
     // TODO: implement build

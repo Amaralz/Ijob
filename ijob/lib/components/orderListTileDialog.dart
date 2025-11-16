@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ijob/Components/toastMessage.dart';
 import 'package:ijob/Core/Entities/categor.dart';
 import 'package:ijob/Core/Entities/categorList.dart';
 import 'package:ijob/Core/Entities/orderService.dart';
@@ -28,70 +29,101 @@ class Orderlisttiledialog extends StatefulWidget {
 
 class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
   _confirmFinalize(BuildContext context) {
-    Provider.of<Requestmessageservices>(
-      context,
-      listen: false,
-    ).deleteRequest(widget.order.initiatedIn, widget.order.requestedIn);
+    if (mounted) {
+      Provider.of<Requestmessageservices>(
+        context,
+        listen: false,
+      ).deleteRequest(widget.order.initiatedIn, widget.order.requestedIn);
 
-    OrderService updated = OrderService(
-      categor: widget.order.categor,
-      definedAt: widget.order.definedAt,
-      id: widget.order.id,
-      initiatedIn: widget.order.initiatedIn,
-      orderedAt: widget.order.orderedAt,
-      servicer: widget.order.servicer,
-      user: widget.order.user,
-      value: widget.order.value,
-      finishedAt: widget.order.finishedAt,
-      requestedIn: "Consumed",
-      status: 3,
-    );
+      OrderService updated = OrderService(
+        categor: widget.order.categor,
+        definedAt: widget.order.definedAt,
+        id: widget.order.id,
+        initiatedIn: widget.order.initiatedIn,
+        orderedAt: widget.order.orderedAt,
+        servicer: widget.order.servicer,
+        user: widget.order.user,
+        value: widget.order.value,
+        finishedAt: widget.order.finishedAt,
+        requestedIn: "Consumed",
+        status: 3,
+      );
 
-    Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
-    Navigator.of(context).pop();
+      Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
+      Toastmessage(
+        icon: Icon(Icons.handshake_outlined),
+        primaryColor: Theme.of(context).secondaryHeaderColor,
+        subtitle: "Pedido confirmado e concluído!",
+        title: "Pedido concluído",
+      ).toast(context);
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
   }
 
   _finalize(BuildContext context) {
-    OrderService updated = OrderService(
-      categor: widget.order.categor,
-      definedAt: widget.order.definedAt,
-      id: widget.order.id,
-      initiatedIn: widget.order.initiatedIn,
-      orderedAt: widget.order.orderedAt,
-      servicer: widget.order.servicer,
-      user: widget.order.user,
-      value: widget.order.value,
-      finishedAt: DateTime.now(),
-      requestedIn: widget.order.requestedIn,
-      status: 2,
-    );
+    if (mounted) {
+      OrderService updated = OrderService(
+        categor: widget.order.categor,
+        definedAt: widget.order.definedAt,
+        id: widget.order.id,
+        initiatedIn: widget.order.initiatedIn,
+        orderedAt: widget.order.orderedAt,
+        servicer: widget.order.servicer,
+        user: widget.order.user,
+        value: widget.order.value,
+        finishedAt: DateTime.now(),
+        requestedIn: widget.order.requestedIn,
+        status: 2,
+      );
 
-    Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
-    Navigator.of(context).pop();
+      Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
+      Toastmessage(
+        icon: Icon(Icons.check),
+        primaryColor: Colors.green,
+        subtitle:
+            "Aguarde a confirmação de ${widget.user.nome} para o pedido ser concluído",
+        title: "Pedido finalizado",
+      ).toast(context);
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
   }
 
   _cancel(BuildContext context) {
-    Provider.of<Requestmessageservices>(
-      context,
-      listen: false,
-    ).deleteRequest(widget.order.initiatedIn, widget.order.requestedIn);
+    if (mounted) {
+      Provider.of<Requestmessageservices>(
+        context,
+        listen: false,
+      ).deleteRequest(widget.order.initiatedIn, widget.order.requestedIn);
 
-    OrderService updated = OrderService(
-      categor: widget.order.categor,
-      definedAt: widget.order.definedAt,
-      id: widget.order.id,
-      initiatedIn: widget.order.initiatedIn,
-      orderedAt: widget.order.orderedAt,
-      servicer: widget.order.servicer,
-      user: widget.order.user,
-      value: widget.order.value,
-      finishedAt: null,
-      requestedIn: "Consumed",
-      status: 0,
-    );
+      OrderService updated = OrderService(
+        categor: widget.order.categor,
+        definedAt: widget.order.definedAt,
+        id: widget.order.id,
+        initiatedIn: widget.order.initiatedIn,
+        orderedAt: widget.order.orderedAt,
+        servicer: widget.order.servicer,
+        user: widget.order.user,
+        value: widget.order.value,
+        finishedAt: null,
+        requestedIn: "Consumed",
+        status: 0,
+      );
 
-    Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
-    Navigator.of(context).pop();
+      Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
+      Toastmessage(
+        icon: Icon(Icons.cancel),
+        primaryColor: const Color.fromARGB(255, 47, 61, 68),
+        subtitle: "Seu pedido com ${widget.servicer} foi cancelado",
+        title: "Pedido cancelado",
+      ).toast(context);
+      Navigator.of(context).pop();
+    } else {
+      return;
+    }
   }
 
   _confirmationButtons(BuildContext context) {

@@ -87,7 +87,10 @@ class _LoginComponentState extends State<LoginComponent> {
                   //LOGIN
                   TextFormField(
                     controller: usuarioController,
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -105,7 +108,10 @@ class _LoginComponentState extends State<LoginComponent> {
                   //SENHA
                   TextFormField(
                     controller: senhaController,
-                    decoration: const InputDecoration(labelText: 'Senha'),
+                    decoration: const InputDecoration(
+                      labelText: 'Senha',
+                      border: OutlineInputBorder(),
+                    ),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {

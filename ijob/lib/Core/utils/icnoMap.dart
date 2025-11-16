@@ -12,6 +12,7 @@ class Icnomap {
     "menu_book": Icons.menu_book,
     "fire_truck_sharp": Icons.fire_truck_sharp,
     "construction": Icons.construction,
+    "default": Icons.question_mark,
   };
 
   static IconData getIconData(String iconName) {

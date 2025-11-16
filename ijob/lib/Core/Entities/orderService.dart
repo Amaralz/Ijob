@@ -54,6 +54,9 @@ class OrderService {
       value: data['value'],
       orderedAt: DateTime.parse(data['orderedAt']),
       definedAt: DateTime.parse(data['definedAt']),
+      finishedAt: data['finishedAt'] == null
+          ? null
+          : DateTime.parse(data['finishedAt']),
       initiatedIn: data['initiatedIn'],
       requestedIn: data['requestedIn'],
       status: data['status'],

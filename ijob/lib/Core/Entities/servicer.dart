@@ -11,6 +11,7 @@ class Servicer {
   final String? celular;
   final Address? endereco;
   final double rating;
+  final bool active;
   final int role;
 
   const Servicer({
@@ -24,6 +25,7 @@ class Servicer {
     this.url =
         "https://thumbs.dreamstime.com/b/eletricista-nos-macac%C3%B5es-cercados-com-fontes-e-ferramentas-da-eletricidade-103748791.jpg",
     this.rating = 5.0,
+    this.active = true,
     this.role = 1,
   });
 
@@ -38,6 +40,7 @@ class Servicer {
       'endereco': endereco?.toJson(),
       'rating': rating,
       'celular': celular,
+      'active': active,
       'role': role,
     };
   }
@@ -55,6 +58,7 @@ class Servicer {
       url: data["url"],
       rating: (data['rating'] as num?)?.toDouble() ?? 5.0,
       celular: data["celular"],
+      active: data['active'],
       role: data["role"],
     );
   }

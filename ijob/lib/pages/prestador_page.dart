@@ -9,15 +9,9 @@ import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:ijob/Core/services/chat/chatServices.dart';
 import 'package:ijob/pages/mapPage.dart';
 import 'package:ijob/Core/utils/icnoMap.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class Prestadorpage extends StatelessWidget {
-  Future<LatLng> getUserPosition() async {
-    final position = await Location().getLocation();
-    return LatLng(position.latitude!, position.longitude!);
-  }
-
   Future<void> _createNewChat(
     BuildContext context,
     Servicer servicer,
@@ -46,34 +40,37 @@ class Prestadorpage extends StatelessWidget {
             situation: "Ativa",
           ),
         );
+
+        Toastmessage(
+          title: "Conversa criada!",
+          subtitle: "Conversa com ${servicer.nome} foi adicionada à conversas",
+          primaryColor: Theme.of(context).secondaryHeaderColor,
+          icon: Icon(Icons.message),
+        ).toast(context);
       } catch (error) {
         throw "Erro inesperado ao juntar dados para criação do chat";
       }
-
-      Toastmessage(
-        title: "Conversa criada!",
-        subtitle: "Conversa com ${servicer.nome} foi adicionada à conversas",
-        primaryColor: Theme.of(context).secondaryHeaderColor,
-        icon: Icon(Icons.message),
-      ).toast(context);
     }
+  }
+
+  Icon corvertIcon(String iconName, BuildContext context) {
+    IconData iconData = Icnomap.getIconData(iconName);
+    return Icon(iconData, size: 20, color: Theme.of(context).primaryColor);
   }
 
   @override
   Widget build(BuildContext context) {
-    final catProvider = Provider.of<Categorlist>(context);
-    final user = Provider.of<Profileuserlist>(context).profile;
-
-    Icon corvertIcon(String iconName) {
-      IconData iconData = Icnomap.getIconData(iconName);
-      return Icon(iconData, size: 20, color: Theme.of(context).primaryColor);
-    }
+    final catProvider = Provider.of<Categorlist>(context, listen: false);
+    final user = Provider.of<Profileuserlist>(context, listen: false).profile;
 
     final Servicer servicer =
         ModalRoute.of(context)!.settings.arguments as Servicer;
 
-    final String _address =
-        "${servicer.endereco!.locality}, ${servicer.endereco!.route}, ${servicer.endereco!.number}";
+    final bool hasAddress = servicer.endereco != null;
+
+    final String _address = hasAddress
+        ? "${servicer.endereco!.locality}, ${servicer.endereco!.route}, ${servicer.endereco!.number}"
+        : "Sem endereço";
     // TODO: implement build
     return Scaffold(
       body: CustomScrollView(
@@ -96,7 +93,9 @@ class Prestadorpage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage(servicer.url!),
+                      backgroundImage: servicer.url != null
+                          ? NetworkImage(servicer.url!)
+                          : null,
                       radius: 70,
                     ),
                   ),
@@ -116,13 +115,16 @@ class Prestadorpage extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  cat!.name!,
+                                  cat?.name ?? "Categoria",
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                corvertIcon(cat.icon.toString()),
+                                corvertIcon(
+                                  cat?.icon.toString() ?? "default",
+                                  context,
+                                ),
                               ],
                             ),
                           ),
@@ -133,18 +135,21 @@ class Prestadorpage extends StatelessWidget {
                   SizedBox(
                     width: 300,
                     child: TextButton.icon(
-                      onPressed: () async {
-                        LatLng _userp = await getUserPosition();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => Mappage(
-                              initial: servicer.endereco!.latilong,
-                              userp: _userp,
-                            ),
-                            fullscreenDialog: true,
-                          ),
-                        );
-                      },
+                      onPressed: (hasAddress)
+                          ? () async {
+                              LatLng _userp =
+                                  user.endereco?.latilong ?? LatLng(0, 0);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => Mappage(
+                                    initial: servicer.endereco!.latilong,
+                                    userp: _userp,
+                                  ),
+                                  fullscreenDialog: true,
+                                ),
+                              );
+                            }
+                          : null,
                       label: Text(_address, overflow: TextOverflow.ellipsis),
                       icon: Icon(Icons.add_location),
                     ),
@@ -155,9 +160,8 @@ class Prestadorpage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: SizedBox(
-        width: double.maxFinite,
-        height: 50,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             elevation: 2,

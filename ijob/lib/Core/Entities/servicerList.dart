@@ -135,4 +135,51 @@ class Servicerlist extends ChangeNotifier {
     } else
       return false;
   }
+
+  Future<void> deactivateServicer(Servicer serv) async {
+    final query = _db.doc(serv.id);
+
+    Servicer servicer = Servicer(
+      id: serv.id,
+      nome: serv.nome,
+      category: serv.category,
+      cpf: serv.cpf,
+      endereco: serv.endereco,
+      celular: serv.celular,
+      email: serv.email,
+      rating: serv.rating,
+      url: serv.url,
+      role: serv.role,
+      active: false,
+    );
+
+    try {
+      await query.update(servicer.toJson());
+    } catch (error) {
+      throw "Erro ao tentar desativar servicer";
+    }
+  }
+
+  Future<void> updateServicer(Servicer serv) async {
+    final query = _db.doc(serv.id);
+
+    Servicer servicer = Servicer(
+      id: serv.id,
+      nome: serv.nome,
+      category: serv.category,
+      cpf: serv.cpf,
+      endereco: serv.endereco,
+      celular: serv.celular,
+      email: serv.email,
+      rating: serv.rating,
+      url: serv.url,
+      role: serv.role,
+    );
+
+    try {
+      await query.update(servicer.toJson());
+    } catch (error) {
+      throw "Erro ao tentar atualizar servicer";
+    }
+  }
 }

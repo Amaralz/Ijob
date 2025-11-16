@@ -9,6 +9,7 @@ class Profileuser {
   final String? celular;
   final String? genero;
   final Address? endereco;
+  final bool active;
   final int role;
 
   const Profileuser({
@@ -19,6 +20,7 @@ class Profileuser {
     required this.celular,
     required this.genero,
     required this.endereco,
+    this.active = true,
     required this.role,
   });
 
@@ -30,6 +32,7 @@ class Profileuser {
       'celular': celular,
       'genero': genero,
       'endereco': endereco?.toJson(),
+      'active': active,
       'role': role,
     };
   }
@@ -46,6 +49,7 @@ class Profileuser {
       celular: data['celular'],
       genero: data['genero'],
       endereco: Address.fromMap(data['endereco']),
+      active: data['active'],
       role: data['role'],
     );
   }

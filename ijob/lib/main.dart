@@ -10,6 +10,8 @@ import 'package:ijob/Core/services/chat/requestMessageServices.dart';
 import 'package:ijob/Core/services/order/orderServicer.dart';
 import 'package:ijob/pages/chatsPage.dart';
 import 'package:ijob/pages/configuracoes_page.dart';
+import 'package:ijob/pages/dashboardPage.dart';
+import 'package:ijob/pages/editar_perfil_page.dart';
 import 'package:ijob/pages/innerChatPage.dart';
 import 'package:ijob/pages/notificacao_page.dart';
 import 'package:ijob/pages/ordersPage.dart';
@@ -80,6 +82,8 @@ class MyApp extends StatelessWidget {
           Routes.PERFIL: (context) => PerfilPage(),
           Routes.INNERCHAT: (context) => Innerchatpage(),
           Routes.ORDERS: (context) => Orderspage(),
+          Routes.DASHBOARD: (context) => Dashboardpage(),
+          Routes.EDIT: (context) => EditarPerfilPage(),
         },
       ),
     );

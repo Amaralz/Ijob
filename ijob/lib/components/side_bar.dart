@@ -69,6 +69,8 @@ class _SidebarState extends State<Sidebar> {
           _selectedIndex = 2;
         } else if (currentRoute == Routes.ORDERS) {
           _selectedIndex = 5;
+        } else if (currentRoute == Routes.DASHBOARD) {
+          _selectedIndex = 3;
         }
       });
     });
@@ -82,28 +84,31 @@ class _SidebarState extends State<Sidebar> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            accountName: FutureBuilder<String>(
-              future: _carregarNome(role),
-              builder: (context, snapshot) {
-                String name = "";
-                if (snapshot.connectionState == ConnectionState.done) {
-                  name = snapshot.data ?? "Usuário";
-                }
-                if (snapshot.hasError) {
-                  name = "Erro ao carregar";
-                }
-                return Text(
-                  name,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                );
-              },
-            ),
-            accountEmail: Text(auth.usuario?.email ?? ''),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.person, size: 40, color: Colors.blue),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamed(Routes.EDIT),
+            child: UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              accountName: FutureBuilder<String>(
+                future: _carregarNome(role),
+                builder: (context, snapshot) {
+                  String name = "";
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    name = snapshot.data ?? "Usuário";
+                  }
+                  if (snapshot.hasError) {
+                    name = "Erro ao carregar";
+                  }
+                  return Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  );
+                },
+              ),
+              accountEmail: Text(auth.usuario?.email ?? ''),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, size: 40, color: Colors.blue),
+              ),
             ),
           ),
 
@@ -130,14 +135,13 @@ class _SidebarState extends State<Sidebar> {
           ),
 
           //botão notificação
-          ListTile(
+          /*ListTile(
             leading: const Icon(Icons.add_alert),
             title: const Text('notificações'),
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
             onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
-          ),
-
+          ),*/
           ListTile(
             leading: const Icon(Icons.view_timeline_outlined),
             title: const Text('Pedidos'),
@@ -147,7 +151,7 @@ class _SidebarState extends State<Sidebar> {
           ),
 
           // Expansion Item (adicionado após o último ListTile)
-          ExpansionTile(
+          /*  ExpansionTile(
             leading: const Icon(Icons.filter_b_and_w_outlined),
             title: const Text('Mais'),
             onExpansionChanged: (expanded) {
@@ -161,13 +165,7 @@ class _SidebarState extends State<Sidebar> {
                 title: const Text('Dashboard'),
                 selected: _selectedIndex == 3,
                 selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = 3;
-                  });
-                  Navigator.pop(context);
-                  print('Expansion Item 1 tapped');
-                },
+                onTap: () => _navigateAndSelect(context, 3, Routes.DASHBOARD),
               ),
 
               // Subitem 2
@@ -185,7 +183,7 @@ class _SidebarState extends State<Sidebar> {
                 },
               ),
             ],
-          ),
+          ),*/
           Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),

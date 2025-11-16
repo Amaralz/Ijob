@@ -95,4 +95,47 @@ class Profileuserlist extends ChangeNotifier {
     } else
       return false;
   }
+
+  Future<void> deactivateUser(Profileuser user) async {
+    final query = _db.doc(user.id);
+
+    Profileuser profiler = Profileuser(
+      id: user.id,
+      nome: user.nome,
+      cpf: user.cpf,
+      endereco: user.endereco,
+      celular: user.celular,
+      email: user.email,
+      role: user.role,
+      genero: user.genero,
+      active: false,
+    );
+
+    try {
+      await query.update(profiler.toJson());
+    } catch (error) {
+      throw "Error ao tentar desativar conta";
+    }
+  }
+
+  Future<void> updateProfile(Profileuser user) async {
+    final query = _db.doc(user.id);
+
+    Profileuser profiler = Profileuser(
+      id: user.id,
+      nome: user.nome,
+      cpf: user.cpf,
+      endereco: user.endereco,
+      celular: user.celular,
+      email: user.email,
+      role: user.role,
+      genero: user.genero,
+    );
+
+    try {
+      await query.update(profiler.toJson());
+    } catch (error) {
+      throw "Error ao tentar atualizar conta";
+    }
+  }
 }

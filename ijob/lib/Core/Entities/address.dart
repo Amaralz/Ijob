@@ -68,4 +68,12 @@ class Address {
   String get number {
     return _number;
   }
+
+  String get country {
+    return _country;
+  }
+
+  String get state {
+    return _administrativeArea;
+  }
 }

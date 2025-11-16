@@ -13,4 +13,6 @@ class Routes {
   static const SERVICERHOME = '/servicerhome';
   static const INNERCHAT = '/innerchat';
   static const ORDERS = '/orders';
+  static const DASHBOARD = '/dashboard';
+  static const EDIT = '/edit';
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ijob/Core/Entities/address.dart';
@@ -6,45 +7,42 @@ import 'package:ijob/Core/Entities/profileUser.dart';
 import 'package:ijob/Core/Entities/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/data/addressData.dart';
 import 'package:ijob/Core/services/auth/authServices.dart';
 import 'package:ijob/Core/utils/locationUtil.dart';
 import 'package:ijob/Core/utils/routes.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-class PerfilPage extends StatefulWidget {
-  const PerfilPage({super.key});
+class EditarPerfilPage extends StatefulWidget {
+  const EditarPerfilPage({super.key});
 
   @override
-  State<PerfilPage> createState() => _PerfilPageState();
+  State<EditarPerfilPage> createState() => _EditarPerfilPageState();
 }
 
-class _PerfilPageState extends State<PerfilPage> {
+class _EditarPerfilPageState extends State<EditarPerfilPage> {
   final _formKey = GlobalKey<FormState>();
+
   final _nomeController = TextEditingController();
   final _cpfController = TextEditingController();
-  final _cidadeController = TextEditingController();
-  final _bairroController = TextEditingController();
-  final _celularcontroller = TextEditingController();
   final _ruaController = TextEditingController();
   final _numeroController = TextEditingController();
-  String? _genero;
-  String? _paisSelecionado;
-  String? _estadoSelecionado;
-  String? _role;
+  final _bairroController = TextEditingController();
+  final _cidadeController = TextEditingController();
+  final _celularController = TextEditingController();
   String? _categor;
   String? _categorSecond;
   List<String> _selectedCategor = [];
-  String _standardUrl =
+  final String _standardUrl =
       "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg";
 
-  final _paises = paises;
-  final _estadoPorPais = estadoPorPais;
+  String? _genero;
+  String? _paisSelecionado;
+  String? _estadoSelecionado;
 
   bool _loading = false;
-  bool _locLoading = false;
 
   final cpfFormatter = MaskTextInputFormatter(
     mask: '###.###.###.##',
@@ -56,19 +54,26 @@ class _PerfilPageState extends State<PerfilPage> {
     filter: {"#": RegExp(r'[0-9]')},
   );
 
+  final List<Map<String, String>> _paises = paises;
+
+  final Map<String, List<String>> _estadoPorPais = estadoPorPais;
+
   String _nameFormatter(String string) {
     return string.substring(0, 1).toUpperCase() +
         string.substring(1).toLowerCase();
   }
 
-  Future<void> _salvarPerfil() async {
+  Future<void> _salvarEdicao() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
 
+    final role = Provider.of<Userrole>(context);
     final user = Provider.of<AuthService>(context, listen: false).usuario;
     if (user == null) return;
-    int decider = int.parse(_role!);
+
+    final cpfLimpo = _cpfController.text.replaceAll(RegExp(r'\D'), '');
+    final celularLimpo = _celularController.text.replaceAll(RegExp(r'\D'), '');
 
     try {
       LatLng location = await Locationutil.getLatLngFromAdress(
@@ -80,7 +85,7 @@ class _PerfilPageState extends State<PerfilPage> {
         _paisSelecionado!,
       );
 
-      Address endereco = Address(
+      Address _endereco = Address(
         _ruaController.text,
         _numeroController.text,
         _bairroController.text,
@@ -91,86 +96,286 @@ class _PerfilPageState extends State<PerfilPage> {
         location.longitude,
       );
 
-      if (decider == 0) {
-        //Usuario
+      if (role.isUsu) {
+        //cliente
+        final old = Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).profile;
+
         final usuario = Profileuser(
-          id: user.uid,
+          id: old.id,
           email: user.email,
           nome: _nameFormatter(_nomeController.text),
-          cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
-          celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
+          cpf: cpfLimpo,
+          celular: celularLimpo,
           genero: _genero!,
-          endereco: endereco,
-          role: decider,
+          endereco: _endereco,
+          role: old.role,
         );
-
         await Provider.of<Profileuserlist>(
           context,
           listen: false,
-        ).createUserProfile(user, usuario);
-      } else if (decider == 1) {
+        ).updateProfile(usuario);
+        setState(() => _loading = false);
+      } else if (role.isServicer) {
+        //prestador
+        final serv = Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).servicerUser;
+
         _selectedCategor.clear();
         _selectedCategor.add(_categor!);
         _selectedCategor.add(_categorSecond!);
-        //prestador
+
         final servicer = Servicer(
-          id: user.uid,
+          id: serv.id,
           email: user.email,
           nome: _nameFormatter(_nomeController.text),
           category: _selectedCategor,
-          cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
-          endereco: endereco,
-          celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
-          role: decider,
+          cpf: cpfLimpo,
+          endereco: _endereco,
+          celular: celularLimpo,
+          role: serv.role,
           url: _standardUrl,
           rating: 5.0,
         );
         await Provider.of<Servicerlist>(
           context,
           listen: false,
-        ).createServicer(user, servicer);
+        ).updateServicer(servicer);
+        setState(() => _loading = false);
       } else {
         setState(() => _loading = false);
         return;
       }
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro:$e')));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _confirmarExclusao(BuildContext context) async {
+    final confirmou = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Excluir conta?'),
+        content: const Text(
+          'ATENÇÃO: Está ação é IRREVERSíVEL.\n\n'
+          'Todos os seus dados serão apagados permanentemente.\n'
+          'você será desconectado.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('EXCLUIR PARA SEMPRE!'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmou != true) return;
+
+    await _deletarConta(context);
+  }
+
+  Future<void> _deletarConta(BuildContext context) async {
+    final user = Provider.of<AuthService>(context, listen: false).usuario;
+    if (user == null) return;
+
+    final role = Provider.of<Userrole>(context, listen: false);
+
+    setState(() => _loading = true);
+
+    try {
+      await user.delete();
+      if (role.isUsu) {
+        final profiler = Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).profile;
+        await Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).deactivateUser(profiler);
+      } else {
+        final servicer = Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).servicerUser;
+        await Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).deactivateServicer(servicer);
+      }
+      await Provider.of<AuthService>(context, listen: false).logout();
+
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
-          Routes.AUTHCHECK,
+          Routes.LOGIN,
           (route) => false,
         );
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Conta excluida com sucesso.')),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text(
+                'Para excluir a conta, faça login novamente.',
+              ),
+              backgroundColor: Colors.orange[700],
+              duration: const Duration(seconds: 10),
+              action: SnackBarAction(
+                label: 'Fazer login',
+                textColor: Colors.white,
+                onPressed: () async {
+                  //FAZ O LOGOUT
+                  await Provider.of<AuthService>(
+                    context,
+                    listen: false,
+                  ).logout();
+                  //VOLTA PARA O LOGIN
+                  if (mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      Routes.LOGIN,
+                      (route) => false,
+                    );
+                  }
+                },
+              ),
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erro ao excluir conta: ${e.message}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _loading = false;
-        });
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text("Falha ao salvar dados")));
+        ).showSnackBar(SnackBar(content: Text('Erro: $e')));
       }
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   @override
   void initState() {
-    Provider.of<Categorlist>(context, listen: false).loadCategors();
     super.initState();
+
+    _preencherDados();
+  }
+
+  void _preencherDados() {
+    final role = Provider.of<Userrole>(context, listen: false);
+
+    if (role.isUsu) {
+      final profile = Provider.of<Profileuserlist>(
+        context,
+        listen: false,
+      ).profile;
+
+      _nomeController.text = profile.nome!;
+      _cpfController.text = profile.cpf!;
+      _celularController.text = profile.celular!;
+      _ruaController.text = profile.endereco!.route;
+      _numeroController.text = profile.endereco!.number;
+      _bairroController.text = profile.endereco!.neighborhood;
+      _cidadeController.text = profile.endereco!.locality;
+
+      _genero = profile.genero;
+      _paisSelecionado = profile.endereco!.country;
+      _estadoSelecionado = profile.endereco!.state;
+    } else if (role.isServicer) {
+      final servicer = Provider.of<Servicerlist>(
+        context,
+        listen: false,
+      ).servicerUser;
+
+      _nomeController.text = servicer.nome!;
+      _cpfController.text = servicer.cpf!;
+      _celularController.text = servicer.celular!;
+      _ruaController.text = servicer.endereco!.route;
+      _numeroController.text = servicer.endereco!.number;
+      _bairroController.text = servicer.endereco!.neighborhood;
+      _cidadeController.text = servicer.endereco!.locality;
+
+      _paisSelecionado = servicer.endereco!.country;
+      _estadoSelecionado = servicer.endereco!.state;
+
+      if (servicer.category!.isNotEmpty) {
+        _categor = servicer.category![0];
+        _selectedCategor.add(_categor!);
+      }
+      if (servicer.category!.length > 1) {
+        _categorSecond = servicer.category![1];
+        _selectedCategor.add(_categorSecond!);
+      }
+    }
   }
 
   @override
   void dispose() {
     _nomeController.dispose();
     _cpfController.dispose();
+    _ruaController.dispose();
+    _numeroController.dispose();
     _bairroController.dispose();
-    _celularcontroller.dispose();
+    _cidadeController.dispose();
+    _celularController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final role = Provider.of<Userrole>(context, listen: false);
+    final user = Provider.of<AuthService>(context, listen: false).usuario;
+
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Editar Perfil')),
+        body: const Center(child: Text('Usuário não autenticado')),
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Completar Perfil')),
+      appBar: AppBar(
+        title: const Text('Editar Perfil'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_forever, color: Colors.red),
+            onPressed: () => _confirmarExclusao(context),
+            tooltip: 'Excluir conta permanentemente!',
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -183,8 +388,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-
-              //nome
+              //NOME
               TextFormField(
                 controller: _nomeController,
                 decoration: const InputDecoration(
@@ -194,8 +398,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
               ),
               const SizedBox(height: 16),
-
-              //cpf
+              //CPF
               TextFormField(
                 controller: _cpfController,
                 decoration: const InputDecoration(
@@ -211,68 +414,6 @@ class _PerfilPageState extends State<PerfilPage> {
                 },
               ),
               const SizedBox(height: 16),
-
-              _locLoading
-                  ? CircularProgressIndicator()
-                  : TextButton.icon(
-                      onPressed: () async {
-                        setState(() {
-                          _locLoading = true;
-                        });
-                        try {
-                          final position = await Location().getLocation();
-
-                          if (position.latitude == null ||
-                              position.longitude == null) {
-                            throw 'Erro ao tentar conseguir posição';
-                          }
-
-                          final address = await Locationutil()
-                              .getAdressFromLatLng(
-                                LatLng(position.latitude!, position.longitude!),
-                              );
-
-                          if (address == null) {
-                            throw 'Erro ao tentar conseguir endereço';
-                          }
-                          String? paisCod;
-                          try {
-                            final paisMap = _paises.firstWhere(
-                              (pais) => pais['nome'] == address.country,
-                            );
-                            paisCod = paisMap['codigo'];
-                          } catch (erro) {
-                            throw 'País não suportado';
-                          }
-
-                          setState(() {
-                            _ruaController.text = address.route;
-                            _numeroController.text = address.number;
-                            _bairroController.text = address.neighborhood;
-                            _cidadeController.text = address.locality;
-                            _paisSelecionado = paisCod;
-                            _estadoSelecionado = address.state;
-                          });
-                        } catch (erro) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Erro: ${erro.toString()} '),
-                            ),
-                          );
-                        } finally {
-                          if (mounted) {
-                            setState(() {
-                              _locLoading = false;
-                            });
-                          }
-                        }
-                      },
-                      label: Text("Selecionar localização atual"),
-                      icon: Icon(Icons.add_location),
-                    ),
-
-              const SizedBox(height: 16),
-
               //PAÍS
               DropdownButtonFormField(
                 initialValue: _paisSelecionado,
@@ -294,7 +435,6 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v == null ? 'Obrigatório' : null,
               ),
               const SizedBox(height: 16),
-
               //ESTADO
               DropdownButtonFormField<String>(
                 initialValue: _estadoSelecionado,
@@ -314,8 +454,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     : null,
               ),
               const SizedBox(height: 16),
-
-              //Cidade
+              //CIDADE
               TextFormField(
                 controller: _cidadeController,
                 decoration: const InputDecoration(
@@ -325,7 +464,6 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatório' : null,
               ),
               const SizedBox(height: 16),
-
               //BAIRRO
               TextFormField(
                 controller: _bairroController,
@@ -333,10 +471,9 @@ class _PerfilPageState extends State<PerfilPage> {
                   labelText: 'Bairro',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
+                validator: (v) => v!.trim().isEmpty ? 'Obrigatório' : null,
               ),
               const SizedBox(height: 16),
-
               //RUA
               TextFormField(
                 controller: _ruaController,
@@ -357,11 +494,10 @@ class _PerfilPageState extends State<PerfilPage> {
                 keyboardType: TextInputType.number,
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
               ),
-
-              //CELULAR
               const SizedBox(height: 16),
+              //CELULAR
               TextFormField(
-                controller: _celularcontroller,
+                controller: _celularController,
                 decoration: const InputDecoration(
                   labelText: 'Celular',
                   border: OutlineInputBorder(),
@@ -374,39 +510,24 @@ class _PerfilPageState extends State<PerfilPage> {
                   return null;
                 },
               ),
-
+              const SizedBox(height: 16),
               //GENERO
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                initialValue: _genero,
-                decoration: const InputDecoration(
-                  labelText: 'Gênero',
-                  border: OutlineInputBorder(),
+              if (role.isUsu)
+                DropdownButtonFormField<String>(
+                  initialValue: _genero,
+                  decoration: const InputDecoration(
+                    labelText: 'Gênero',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: ['Masculino', 'Feminino', 'Outro']
+                      .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _genero = v),
+                  validator: (v) => v == null ? 'Selecione um gênero' : null,
                 ),
-                items: ['Masculino', 'Feminino', 'Outro']
-                    .map((g) => DropdownMenuItem(value: g, child: Text(g)))
-                    .toList(),
-                onChanged: (v) => setState(() => _genero = v),
-                validator: (v) => v == null ? 'Selecione um gênero' : null,
-              ),
-              const SizedBox(height: 30),
 
-              //ROLE
-              DropdownButtonFormField<String>(
-                initialValue: _role,
-                decoration: const InputDecoration(
-                  labelText: 'tipo de conta',
-                  border: OutlineInputBorder(),
-                ),
-                items: [
-                  DropdownMenuItem(value: '0', child: Text('Cliente')),
-                  DropdownMenuItem(value: '1', child: Text('Prestador')),
-                ],
-                onChanged: (v) => setState(() => _role = v),
-                validator: (v) => v == null ? 'Selecione uma opção' : null,
-              ),
               const SizedBox(height: 16),
-              if (_role == "1")
+              if (role.isServicer)
                 //CATEGOR
                 DropdownButtonFormField<String>(
                   initialValue: _categor,
@@ -432,7 +553,7 @@ class _PerfilPageState extends State<PerfilPage> {
                   validator: (v) => v == null ? 'Selecione uma opção' : null,
                 ),
               const SizedBox(height: 16),
-              if (_role == "1" && _selectedCategor.length > 0)
+              if (role.isServicer && _selectedCategor.length > 0)
                 //CATEGOR
                 DropdownButtonFormField<String>(
                   initialValue: _categorSecond,
@@ -454,17 +575,16 @@ class _PerfilPageState extends State<PerfilPage> {
                   }),
                   validator: (v) => v == null ? 'Selecione uma opção' : null,
                 ),
-              const SizedBox(height: 16),
-
+              //SALVAR
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _loading ? null : _salvarPerfil,
+                  onPressed: _loading ? null : _salvarEdicao,
                   child: _loading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
-                          'SALVAR E CONTINUAR',
+                          'SALVAR ALTERAÇÕES',
                           style: TextStyle(fontSize: 16),
                         ),
                 ),

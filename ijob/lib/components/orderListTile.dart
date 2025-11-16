@@ -195,7 +195,7 @@ class Orderlisttile extends StatelessWidget {
     switch (order.status) {
       case 0:
         return _boxTile(
-          primaryColor: const Color.fromARGB(255, 47, 61, 68),
+          primaryColor: Colors.blueGrey,
           secondaryColor: const Color.fromARGB(255, 22, 29, 32),
           categorName: categor?.name,
           msg: "Cancelado",
@@ -204,8 +204,8 @@ class Orderlisttile extends StatelessWidget {
       case 1:
         return _boxTileActive(
           context: context,
-          primaryColor: Colors.yellow,
-          secondaryColor: const Color.fromARGB(255, 206, 186, 4),
+          primaryColor: Colors.orange,
+          secondaryColor: Colors.orangeAccent,
           categorName: categor?.name,
           checker: role.isServicer,
           msg: "Pendente",
@@ -221,7 +221,7 @@ class Orderlisttile extends StatelessWidget {
         );
       case 3:
         return _boxTile(
-          primaryColor: Theme.of(context).secondaryHeaderColor,
+          primaryColor: Colors.blue,
           secondaryColor: Colors.blueAccent,
           categorName: categor?.name,
           msg: "Concluído",

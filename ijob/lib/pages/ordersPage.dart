@@ -37,7 +37,7 @@ class _OrderspageState extends State<Orderspage> {
 
   @override
   void dispose() {
-    Provider.of<Orderservicer>(context).dispose();
+    Provider.of<Orderservicer>(context, listen: false).dispose();
     super.dispose();
   }
 
@@ -60,6 +60,7 @@ class _OrderspageState extends State<Orderspage> {
           return FutureBuilder(
             future: Provider.of<Servicerlist>(
               context,
+              listen: false,
             ).getServicer(orders[index].servicer),
             builder: (context, servicer) {
               if (servicer.connectionState == ConnectionState.waiting) {
@@ -68,6 +69,7 @@ class _OrderspageState extends State<Orderspage> {
                 return FutureBuilder(
                   future: Provider.of<Profileuserlist>(
                     context,
+                    listen: false,
                   ).getProfile(orders[index].user),
                   builder: (context, profiler) {
                     if (profiler.connectionState == ConnectionState.waiting) {
