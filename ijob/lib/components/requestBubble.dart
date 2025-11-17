@@ -2,8 +2,8 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ijob/Components/toastMessage.dart';
-import 'package:ijob/Core/Entities/categorList.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:ijob/Core/Entities/requestMessage.dart';
 import 'package:ijob/Core/services/chat/requestMessageServices.dart';
 import 'package:provider/provider.dart';
