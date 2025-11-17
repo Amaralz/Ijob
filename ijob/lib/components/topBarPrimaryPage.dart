@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Core/Entities/profileUser.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:provider/provider.dart';
 
 class topBarPrimaryPage extends StatelessWidget {

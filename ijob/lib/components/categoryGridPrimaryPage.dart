@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/categoryGridTile.dart';
 import 'package:ijob/Core/Entities/categor.dart';
-import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
 import 'package:provider/provider.dart';
 
 class Categorygridprimarypage extends StatelessWidget {

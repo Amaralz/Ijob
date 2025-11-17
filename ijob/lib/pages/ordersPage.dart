@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/orderListTile.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/order/orderServicer.dart';
 import 'package:ijob/components/side_bar.dart';

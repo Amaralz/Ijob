@@ -1,9 +1,9 @@
-import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
 import 'package:ijob/Core/Entities/orderService.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/order/orderServicer.dart';
 import 'package:intl/intl.dart';

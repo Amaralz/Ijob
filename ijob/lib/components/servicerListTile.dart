@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ijob/Core/Entities/address.dart';
-import 'package:ijob/Core/Entities/categorList.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
 import 'package:ijob/Core/Entities/profileUser.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/data/addressData.dart';
 import 'package:ijob/Core/services/auth/authServices.dart';
 import 'package:ijob/Core/utils/locationUtil.dart';

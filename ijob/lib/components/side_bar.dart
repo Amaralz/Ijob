@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Core/Entities/profileUser.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/auth/authServices.dart';
 import 'package:ijob/Core/utils/routes.dart';

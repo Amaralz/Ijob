@@ -22,6 +22,7 @@ class Orderservicer extends ChangeNotifier {
 
       final query = await _db
           .where(Filter.or(filterUser, filterServicer))
+          .orderBy('orderedAt')
           .snapshots();
 
       _ordersSubscription = query.listen((snapshot) {

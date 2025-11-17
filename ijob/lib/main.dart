@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/auth_check.dart';
-import 'package:ijob/Core/Entities/categorList.dart';
-import 'package:ijob/Core/Entities/profileUserList.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/chat/chatServices.dart';
 import 'package:ijob/Core/services/chat/requestMessageServices.dart';

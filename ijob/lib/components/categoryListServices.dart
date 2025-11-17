@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ijob/Components/servicerListTile.dart';
 import 'package:ijob/Core/Entities/categor.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:provider/provider.dart';
 
 class Categorylistservices extends StatelessWidget {

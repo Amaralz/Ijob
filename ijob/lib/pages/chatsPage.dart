@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ijob/Components/chatsListTile.dart';
 import 'package:ijob/Components/side_bar.dart';
 import 'package:ijob/Core/Entities/chat.dart';
-import 'package:ijob/Core/Entities/servicerList.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/services/chat/chatServices.dart';
 import 'package:provider/provider.dart';
 
