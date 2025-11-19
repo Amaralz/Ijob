@@ -77,13 +77,13 @@ class _LoginComponentState extends State<LoginComponent> {
                         ? Colors.white
                         : Colors.black,
                   ),
-                  SizedBox(height: 40),
-                  Text(
+                  const SizedBox(height: 40),
+                  const Text(
                     'LOGIN',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   //LOGIN
                   TextFormField(
                     controller: usuarioController,
@@ -122,7 +122,7 @@ class _LoginComponentState extends State<LoginComponent> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   //BOTÃO ENVIAR
                   ElevatedButton(
                     onPressed: loading ? null : login,
@@ -141,7 +141,9 @@ class _LoginComponentState extends State<LoginComponent> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/cadastro');
                     },
-                    child: Text('Ainda não tem conta? Cadastre-se agora.'),
+                    child: const Text(
+                      'Ainda não tem conta? Cadastre-se agora.',
+                    ),
                   ),
                 ],
               ),

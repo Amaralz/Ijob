@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
 
-class AuthException implements Exception {
+class AuthException extends ChangeNotifier implements Exception {
   final String message;
   AuthException(this.message);
 }
@@ -90,6 +92,31 @@ class AuthService extends ChangeNotifier {
     if (isLoading != value) {
       isLoading = value;
       notifyListeners();
+    }
+  }
+
+  Future<int> defineUserRole(String uid, Userrole roleProv) async {
+    try {
+      final _db = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .get();
+
+      if (!_db.exists) return -1;
+
+      final data = _db.data();
+
+      final role = data?['role'] ?? -1;
+
+      if (role == 0 && roleProv.isServicer) {
+        roleProv.changeToClient();
+      } else if (role == 1 && roleProv.isUsu) {
+        roleProv.changeToServicer();
+      }
+
+      return role;
+    } catch (error) {
+      return -1;
     }
   }
 }

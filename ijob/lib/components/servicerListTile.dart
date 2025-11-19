@@ -49,7 +49,7 @@ class Servicerlisttile extends StatelessWidget {
                 children: [
                   Text(
                     servicer!.nome!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -61,13 +61,13 @@ class Servicerlisttile extends StatelessWidget {
                         width: 120,
                         child: Text(
                           _address,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Icon(Icons.circle, size: 5, color: Colors.grey),
                       Icon(Icons.star, size: 15),
-                      Text(servicer!.rating.toString(), style: TextStyle()),
+                      Text(servicer!.rating.toString()),
                     ],
                   ),
 
@@ -98,8 +98,8 @@ class Servicerlisttile extends StatelessWidget {
                                           provider
                                               .categoryById(category)!
                                               .name!,
-                                          style: TextStyle(
-                                            color: const Color.fromARGB(
+                                          style: const TextStyle(
+                                            color: Color.fromARGB(
                                               255,
                                               173,
                                               173,

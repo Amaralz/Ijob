@@ -20,6 +20,17 @@ class Tabspage extends StatefulWidget {
 class _TabspageState extends State<Tabspage> {
   int _selectedPageIndex = 0;
 
+  Future<void> _refresh(BuildContext context) async {
+    User? user = Provider.of<AuthService>(context, listen: false).usuario;
+    if (user == null) {
+      return await null;
+    }
+    return Provider.of<Profileuserlist>(
+      context,
+      listen: false,
+    ).loadProfileUser(user);
+  }
+
   final List<Map<String, Object>> _pages = [
     {'title': "Ijob", 'page': HomePage()},
     {'title': 'Serviços', 'page': ServicosPage()},
@@ -101,7 +112,10 @@ class _TabspageState extends State<Tabspage> {
           ),
         ],
       ),
-      body: _pages[_selectedPageIndex]['page'] as Widget,
+      body: RefreshIndicator(
+        onRefresh: () => _refresh(context),
+        child: _pages[_selectedPageIndex]['page'] as Widget,
+      ),
     );
   }
 }

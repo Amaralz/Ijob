@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/pages/perfil_page.dart';
@@ -16,26 +15,16 @@ class AuthCheck extends StatefulWidget {
 }
 
 class _AuthCheckState extends State<AuthCheck> {
-  Future<int> _perfilExiste() async {
-    final user = context.read<AuthService>().usuario;
-    if (user == null) return -1;
+  Future<int>? _perfilExiste;
 
-    try {
-      final profiler = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final auth = Provider.of<AuthService>(context, listen: false);
+    final role = Provider.of<Userrole>(context, listen: false);
 
-      if (!profiler.exists) return -1;
-
-      final role = profiler.data()?['role'];
-
-      if (role == 0) return 0;
-      if (role == 1) return 1;
-
-      return -1;
-    } catch (error) {
-      return -1;
+    if (auth.usuario != null && _perfilExiste != null) {
+      _perfilExiste = auth.defineUserRole(auth.usuario!.uid, role);
     }
   }
 
@@ -49,10 +38,16 @@ class _AuthCheckState extends State<AuthCheck> {
         }
 
         if (auth.usuario == null) {
+          _perfilExiste == null;
           return const LoginComponent();
         }
         return FutureBuilder<int>(
-          future: _perfilExiste(),
+          future:
+              _perfilExiste ??
+              auth.defineUserRole(
+                auth.usuario!.uid,
+                Provider.of<Userrole>(context, listen: false),
+              ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return child!;
@@ -61,23 +56,13 @@ class _AuthCheckState extends State<AuthCheck> {
               return const PerfilPage();
             }
             final profileType = snapshot.data;
-            final role = Provider.of<Userrole>(context, listen: false);
-            if (profileType == 0) {
-              if (!role.isUsu) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) role.toggleMode();
-                });
-              }
-              return Tabspage();
-            } else if (profileType == 1) {
-              if (role.isUsu) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) role.toggleMode();
-                });
-              }
-              return Tabsservicer();
-            } else {
-              return PerfilPage();
+            switch (profileType) {
+              case 0:
+                return Tabspage();
+              case 1:
+                return Tabsservicer();
+              default:
+                return const PerfilPage();
             }
           },
         );

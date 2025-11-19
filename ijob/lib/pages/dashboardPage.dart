@@ -6,6 +6,7 @@ import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
 import 'package:ijob/Core/services/order/orderServicer.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -55,6 +56,7 @@ class _DashboardpageState extends State<Dashboardpage> {
         titulo: 'Atrasados',
         valor: order.where(((order) => order.status == 4)).length.toString(),
         cor: Colors.red,
+        filter: 4,
       ),
 
       _buildCard(
@@ -62,6 +64,7 @@ class _DashboardpageState extends State<Dashboardpage> {
         titulo: 'Em Andamento',
         valor: order.where(((order) => order.status == 1)).length.toString(),
         cor: Colors.orange,
+        filter: 1,
       ),
 
       _buildCard(
@@ -69,6 +72,7 @@ class _DashboardpageState extends State<Dashboardpage> {
         titulo: 'Finalizados',
         valor: order.where(((order) => order.status == 2)).length.toString(),
         cor: Colors.green,
+        filter: 2,
       ),
 
       _buildCard(
@@ -76,6 +80,7 @@ class _DashboardpageState extends State<Dashboardpage> {
         titulo: 'Concluídos',
         valor: order.where(((order) => order.status == 3)).length.toString(),
         cor: Colors.blue,
+        filter: 3,
       ),
 
       _buildCard(
@@ -83,6 +88,7 @@ class _DashboardpageState extends State<Dashboardpage> {
         titulo: 'Cancelados',
         valor: order.where(((order) => order.status == 0)).length.toString(),
         cor: Colors.blueGrey,
+        filter: 0,
       ),
     ];
   }
@@ -92,32 +98,39 @@ class _DashboardpageState extends State<Dashboardpage> {
     required String titulo,
     required String valor,
     required Color cor,
+    required int filter,
   }) {
-    return Card(
-      elevation: 4,
-      child: Container(
-        decoration: BoxDecoration(
-          border: BoxBorder.fromLTRB(bottom: BorderSide(color: cor, width: 5)),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 40, color: cor),
-              const SizedBox(height: 8),
-              Text(titulo, style: const TextStyle(fontSize: 14)),
-              const SizedBox(height: 6),
-              Text(
-                valor,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: cor,
+    return GestureDetector(
+      onTap: () =>
+          Navigator.of(context).pushNamed(Routes.ORDERS, arguments: filter),
+      child: Card(
+        elevation: 4,
+        child: Container(
+          decoration: BoxDecoration(
+            border: BoxBorder.fromLTRB(
+              bottom: BorderSide(color: cor, width: 5),
+            ),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 40, color: cor),
+                const SizedBox(height: 8),
+                Text(titulo, style: const TextStyle(fontSize: 14)),
+                const SizedBox(height: 6),
+                Text(
+                  valor,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: cor,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -168,7 +181,10 @@ class _DashboardpageState extends State<Dashboardpage> {
 
     double _getCategorQuant(int index) {
       return orders
-          .where((order) => order.categor == servicer.category![index])
+          .where(
+            (order) =>
+                order.categor == servicer.category![index] && order.status == 3,
+          )
           .length
           .toDouble();
     }

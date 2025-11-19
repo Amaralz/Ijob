@@ -42,7 +42,7 @@ class topBarPrimaryPage extends StatelessWidget {
                     ),
                     subtitle: Text(
                       user.nome!,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),

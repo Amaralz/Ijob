@@ -21,21 +21,21 @@ class _MappageState extends State<Mappage> {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.close_rounded, color: Colors.black),
+          icon: const Icon(Icons.close_rounded, color: Colors.black),
         ),
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(target: widget.initial, zoom: 13),
         markers: {
           Marker(
-            markerId: MarkerId("o"),
+            markerId: const MarkerId("o"),
             position: widget.initial,
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueRed,
             ),
           ),
           Marker(
-            markerId: MarkerId("y"),
+            markerId: const MarkerId("y"),
             position: widget.userp,
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueAzure,

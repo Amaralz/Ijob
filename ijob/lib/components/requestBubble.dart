@@ -50,7 +50,7 @@ class _RequestbubbleState extends State<Requestbubble> {
 
     if (_value == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Insira um valor maior que R\$ 0,00'),
           backgroundColor: Colors.red,
         ),
@@ -85,7 +85,7 @@ class _RequestbubbleState extends State<Requestbubble> {
       title: "Requisição criada!",
       subtitle: "Sua requisição foi criada com sucesso!",
       primaryColor: Theme.of(context).secondaryHeaderColor,
-      icon: Icon(Icons.celebration),
+      icon: const Icon(Icons.celebration),
     ).toast(context);
   }
 
@@ -159,7 +159,9 @@ class _RequestbubbleState extends State<Requestbubble> {
                   child: TextFormField(
                     inputFormatters: <TextInputFormatter>[_format],
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(label: Text("Insira o valor")),
+                    decoration: InputDecoration(
+                      label: const Text("Insira o valor"),
+                    ),
                     onChanged: (value) {
                       setState(() {
                         _value = _format.getUnformattedValue().toInt();
@@ -181,7 +183,7 @@ class _RequestbubbleState extends State<Requestbubble> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).secondaryHeaderColor,
                     ),
-                    child: Text(
+                    child: const Text(
                       "Enviar pedido",
                       style: TextStyle(color: Colors.black),
                     ),

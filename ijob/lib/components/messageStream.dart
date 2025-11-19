@@ -27,7 +27,7 @@ class Messagestream extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text("Sem mensagens"));
+          return Center(child: const Text("Sem mensagens"));
         } else {
           final msgs = snapshot.data!;
           return ListView.builder(

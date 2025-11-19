@@ -80,7 +80,7 @@ class _ReceiverequestbubbleState extends State<Receiverequestbubble> {
         children: [
           //categoria
           _borderContainer([
-            Text(
+            const Text(
               "Categoria selecionada:",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -147,14 +147,14 @@ class _ReceiverequestbubbleState extends State<Receiverequestbubble> {
                                     ),
                                     backgroundColor: Colors.blueGrey,
                                   ),
-                                  child: Text(
+                                  child: const Text(
                                     "Recusar",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Flexible(
                               fit: FlexFit.tight,
                               child: Container(

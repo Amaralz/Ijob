@@ -83,6 +83,12 @@ class Servicerlist extends ChangeNotifier {
       return _servicerCache[uid];
     }
 
+    if (_servicers.where((serv) => serv.id == uid).isNotEmpty) {
+      final servf = _servicers.where((serv) => serv.id == uid).toList()[0];
+      _servicerCache[uid] = servf;
+      return servf;
+    }
+
     try {
       final query = await _db.doc(uid).get();
       Servicer serv = Servicer.fromSnapshot(query);

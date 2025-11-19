@@ -107,6 +107,7 @@ class Profileuserlist extends ChangeNotifier {
       celular: user.celular,
       email: user.email,
       role: user.role,
+      url: user.url,
       genero: user.genero,
       active: false,
     );
@@ -129,6 +130,7 @@ class Profileuserlist extends ChangeNotifier {
       celular: user.celular,
       email: user.email,
       role: user.role,
+      url: user.url,
       genero: user.genero,
     );
 

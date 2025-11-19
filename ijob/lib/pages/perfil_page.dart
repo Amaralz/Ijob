@@ -101,6 +101,7 @@ class _PerfilPageState extends State<PerfilPage> {
           celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
           genero: _genero!,
           endereco: endereco,
+          url: _standardUrl,
           role: decider,
         );
 

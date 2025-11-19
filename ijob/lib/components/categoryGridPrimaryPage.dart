@@ -9,7 +9,7 @@ class Categorygridprimarypage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Categor> categories = Provider.of<Categorlist>(context).categories;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       height: 100,
       child: ListView.builder(
         itemCount: categories.length,

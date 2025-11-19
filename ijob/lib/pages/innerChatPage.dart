@@ -56,8 +56,11 @@ class _InnerchatpageState extends State<Innerchatpage> {
                 await _openResponseModal(context, request);
                 if (mounted) FocusScope.of(context).unfocus();
               },
-        label: Text("Solicitações", style: TextStyle(color: Colors.black)),
-        icon: Icon(Icons.visibility, color: Colors.black),
+        label: const Text(
+          "Solicitações",
+          style: TextStyle(color: Colors.black),
+        ),
+        icon: const Icon(Icons.visibility, color: Colors.black),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(10),
@@ -146,11 +149,11 @@ class _InnerchatpageState extends State<Innerchatpage> {
                                         FocusScope.of(context).unfocus();
                                       }
                                     },
-                                    label: Text(
+                                    label: const Text(
                                       "Marcar",
                                       style: TextStyle(color: Colors.black),
                                     ),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.view_timeline_outlined,
                                       color: Colors.black,
                                     ),
@@ -181,11 +184,14 @@ class _InnerchatpageState extends State<Innerchatpage> {
                                         FocusScope.of(context).unfocus();
                                       }
                                     },
-                              label: Text(
+                              label: const Text(
                                 "Solicitações",
                                 style: TextStyle(color: Colors.black),
                               ),
-                              icon: Icon(Icons.visibility, color: Colors.black),
+                              icon: const Icon(
+                                Icons.visibility,
+                                color: Colors.black,
+                              ),
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadiusGeometry.circular(

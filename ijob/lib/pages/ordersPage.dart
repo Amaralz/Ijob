@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Components/orderListTile.dart';
+import 'package:ijob/Components/ordersFuture.dart';
+import 'package:ijob/Core/Entities/orderService.dart';
 import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
@@ -14,6 +15,9 @@ class Orderspage extends StatefulWidget {
 
 class _OrderspageState extends State<Orderspage> {
   bool _initialized = false;
+  bool _filtered = false;
+  List<OrderService> _order = [];
+  int? _filter;
 
   @override
   void didChangeDependencies() {
@@ -28,8 +32,17 @@ class _OrderspageState extends State<Orderspage> {
       if (userId == null) {
         return;
       }
+      final provider = Provider.of<Orderservicer>(context, listen: false);
 
-      Provider.of<Orderservicer>(context, listen: false).loadOrders(userId);
+      provider.loadOrders(userId);
+      provider.updateLates(userId);
+
+      Object? filterer = ModalRoute.of(context)?.settings.arguments;
+
+      if (filterer != null) {
+        _filtered = true;
+        _filter = filterer as int;
+      }
 
       _initialized = true;
     }
@@ -43,7 +56,30 @@ class _OrderspageState extends State<Orderspage> {
 
   @override
   Widget build(BuildContext context) {
-    final orders = Provider.of<Orderservicer>(context).orders;
+    _order = Provider.of<Orderservicer>(context).orders.reversed.toList();
+
+    if (_filtered) {
+      switch (_filter) {
+        case 0:
+          _order = _order.where((order) => order.status == 0).toList();
+          break;
+        case 1:
+          _order = _order.where((order) => order.status == 1).toList();
+          break;
+        case 2:
+          _order = _order.where((order) => order.status == 2).toList();
+          break;
+        case 3:
+          _order = _order.where((order) => order.status == 3).toList();
+          break;
+        case 4:
+          _order = _order.where((order) => order.status == 4).toList();
+          break;
+        default:
+          _order;
+          break;
+      }
+    }
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -53,39 +89,11 @@ class _OrderspageState extends State<Orderspage> {
         ),
         centerTitle: true,
       ),
-      drawer: Sidebar(),
+      drawer: !_filtered ? Sidebar() : null,
       body: ListView.builder(
-        itemCount: orders.length,
+        itemCount: _order.length,
         itemBuilder: (context, index) {
-          return FutureBuilder(
-            future: Provider.of<Servicerlist>(
-              context,
-              listen: false,
-            ).getServicer(orders[index].servicer),
-            builder: (context, servicer) {
-              if (servicer.connectionState == ConnectionState.waiting) {
-                return Container();
-              } else {
-                return FutureBuilder(
-                  future: Provider.of<Profileuserlist>(
-                    context,
-                    listen: false,
-                  ).getProfile(orders[index].user),
-                  builder: (context, profiler) {
-                    if (profiler.connectionState == ConnectionState.waiting) {
-                      return Container();
-                    } else {
-                      return Orderlisttile(
-                        order: orders[index],
-                        servicer: servicer.data!,
-                        user: profiler.data!,
-                      );
-                    }
-                  },
-                );
-              }
-            },
-          );
+          return Ordersfuture(order: _order[index]);
         },
       ),
     );

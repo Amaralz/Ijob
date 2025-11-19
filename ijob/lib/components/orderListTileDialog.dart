@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ijob/Components/toastMessage.dart';
 import 'package:ijob/Core/Entities/categor.dart';
 import 'package:ijob/Core/services/geralUse/categorList.dart';
@@ -7,7 +8,10 @@ import 'package:ijob/Core/Entities/profileUser.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:ijob/Core/services/chat/requestMessageServices.dart';
 import 'package:ijob/Core/services/order/orderServicer.dart';
+import 'package:ijob/Core/utils/routes.dart';
+import 'package:ijob/pages/mapPage.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class Orderlisttiledialog extends StatefulWidget {
@@ -51,7 +55,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
 
       Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
       Toastmessage(
-        icon: Icon(Icons.handshake_outlined),
+        icon: const Icon(Icons.handshake_outlined),
         primaryColor: Theme.of(context).secondaryHeaderColor,
         subtitle: "Pedido confirmado e concluído!",
         title: "Pedido concluído",
@@ -80,7 +84,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
 
       Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
       Toastmessage(
-        icon: Icon(Icons.check),
+        icon: const Icon(Icons.check),
         primaryColor: Colors.green,
         subtitle:
             "Aguarde a confirmação de ${widget.user.nome} para o pedido ser concluído",
@@ -115,7 +119,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
 
       Provider.of<Orderservicer>(context, listen: false).updateOrder(updated);
       Toastmessage(
-        icon: Icon(Icons.cancel),
+        icon: const Icon(Icons.cancel),
         primaryColor: const Color.fromARGB(255, 47, 61, 68),
         subtitle: "Seu pedido com ${widget.servicer} foi cancelado",
         title: "Pedido cancelado",
@@ -140,7 +144,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                 onPressed: () => _cancel(context),
                 child: Padding(
                   padding: const EdgeInsets.all(3),
-                  child: Text("Cancelar"),
+                  child: const Text("Cancelar"),
                 ),
               ),
             ),
@@ -151,7 +155,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                   onPressed: () => _finalize(context),
                   child: Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text("Confirmar"),
+                    child: const Text("Confirmar"),
                   ),
                 ),
               ),
@@ -172,7 +176,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                   onPressed: () => _cancel(context),
                   child: Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text("Cancelar"),
+                    child: const Text("Cancelar"),
                   ),
                 ),
               ),
@@ -182,7 +186,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                   onPressed: () => _confirmFinalize(context),
                   child: Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text("Confirmar"),
+                    child: const Text("Confirmar"),
                   ),
                 ),
               ),
@@ -205,7 +209,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                 onPressed: () => _cancel(context),
                 child: Padding(
                   padding: const EdgeInsets.all(3),
-                  child: Text("Cancelar"),
+                  child: const Text("Cancelar"),
                 ),
               ),
             ),
@@ -216,13 +220,15 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                   onPressed: () => _finalize(context),
                   child: Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text("Confirmar"),
+                    child: const Text("Confirmar"),
                   ),
                 ),
               ),
           ],
         ),
       );
+    } else {
+      return Container();
     }
   }
 
@@ -257,10 +263,23 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                 'Serviço de ${categor?.name}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
+              if (!widget.isServicer)
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(
+                      context,
+                    ).pushNamed(Routes.PRESTADOR, arguments: widget.servicer);
+                  },
+                  style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+                  child: Text(
+                    "Por: ${widget.servicer.nome}",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               Row(
                 spacing: 5,
                 children: [
-                  Text("Marcado para:"),
+                  const Text("Marcado para:"),
                   Text(
                     DateFormat.yMd('pt_BR').format(widget.order.definedAt),
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -275,7 +294,7 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
                 Row(
                   spacing: 5,
                   children: [
-                    Text("Finalizado em:"),
+                    const Text("Finalizado em:"),
                     Text(
                       DateFormat.yMd('pt_BR').format(widget.order.finishedAt!),
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -289,14 +308,33 @@ class _OrderlisttiledialogState extends State<Orderlisttiledialog> {
               Row(
                 spacing: 10,
                 children: [
-                  Text("Valor acordado: "),
+                  const Text("Valor acordado: "),
                   Text(currencyFormat.format(widget.order.value / 100)),
                 ],
               ),
-              if (widget.isServicer)
-                Text(
-                  "Endereço: ${widget.user.endereco!.neighborhood}, ${widget.user.endereco!.route}, ${widget.user.endereco!.number}",
-                  overflow: TextOverflow.clip,
+              if (widget.isServicer && widget.order.status == 1 ||
+                  widget.order.status == 2 ||
+                  widget.order.status == 4)
+                TextButton(
+                  onPressed: () async {
+                    final position = await Location().getLocation();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => Mappage(
+                          userp: widget.user.endereco!.latilong,
+                          initial: LatLng(
+                            position.latitude!,
+                            position.longitude!,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Endereço: ${widget.user.endereco!.neighborhood}, ${widget.user.endereco!.route}, ${widget.user.endereco!.number}",
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               Spacer(),
               _confirmationButtons(context),

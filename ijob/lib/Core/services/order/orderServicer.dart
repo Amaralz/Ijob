@@ -22,13 +22,14 @@ class Orderservicer extends ChangeNotifier {
 
       final query = await _db
           .where(Filter.or(filterUser, filterServicer))
-          .orderBy('orderedAt')
           .snapshots();
 
       _ordersSubscription = query.listen((snapshot) {
         _orders = snapshot.docs.map((doc) {
           return OrderService.fromSnapshto(doc);
         }).toList();
+        _orders.sort((x, y) => x.orderedAt.compareTo(y.orderedAt));
+
         notifyListeners();
       });
     } catch (error) {
@@ -55,5 +56,51 @@ class Orderservicer extends ChangeNotifier {
     final query = _db.doc(orderService.id);
 
     await query.update(orderService.toJson());
+  }
+
+  Future<void> updateLates(String uid) async {
+    _ordersSubscription?.cancel();
+    try {
+      final filterUser = Filter('user', isEqualTo: uid);
+      final filterServicer = Filter('servicer', isEqualTo: uid);
+
+      final query = _db
+          .where(Filter.or(filterUser, filterServicer))
+          .where('status', isEqualTo: 1)
+          .snapshots();
+
+      _ordersSubscription = query.listen((snapshot) async {
+        List<OrderService> lista = snapshot.docs
+            .map((doc) => OrderService.fromSnapshto(doc))
+            .where((order) => DateTime.now().isAfter(order.definedAt))
+            .toList();
+
+        //nunca usar .map para efeitos de updates ou exclusões, sempre usar o for in
+        for (final order in lista) {
+          final lateOrder = OrderService(
+            id: order.id,
+            user: order.user,
+            servicer: order.servicer,
+            categor: order.categor,
+            value: order.value,
+            orderedAt: order.orderedAt,
+            definedAt: order.definedAt,
+            finishedAt: order.finishedAt,
+            requestedIn: order.requestedIn,
+            status: 4,
+            initiatedIn: order.initiatedIn,
+          );
+
+          await updateOrder(lateOrder);
+        }
+
+        //só depois de verificar e atualizar ele irá informar (e só se realmente tiver ocorrido)
+        if (lista.isNotEmpty) {
+          notifyListeners();
+        }
+      });
+    } catch (error) {
+      throw "Erro ao carregar pedidos";
+    }
   }
 }

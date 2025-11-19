@@ -17,7 +17,7 @@ class Chatspage extends StatelessWidget {
         itemCount: _list.length,
         itemBuilder: (context, index) {
           if (_list.isEmpty || _list == []) {
-            return Center(child: Text("Sem conversas ainda"));
+            return Center(child: const Text("Sem conversas ainda"));
           } else {
             return FutureBuilder(
               future: Provider.of<Servicerlist>(

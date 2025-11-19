@@ -29,9 +29,6 @@ class _SearchServicesbarState extends State<SearchServicesbar> {
             ),
             border: InputBorder.none,
             hintText: "Pesquisar",
-            prefixIcon: widget.controller!.text != ''
-                ? Icon(Icons.cancel)
-                : null,
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () => widget.pressed!(),

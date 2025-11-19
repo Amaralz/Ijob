@@ -35,8 +35,6 @@ class _EditarPerfilPageState extends State<EditarPerfilPage> {
   String? _categor;
   String? _categorSecond;
   List<String> _selectedCategor = [];
-  final String _standardUrl =
-      "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg";
 
   String? _genero;
   String? _paisSelecionado;
@@ -68,7 +66,7 @@ class _EditarPerfilPageState extends State<EditarPerfilPage> {
 
     setState(() => _loading = true);
 
-    final role = Provider.of<Userrole>(context);
+    final role = Provider.of<Userrole>(context, listen: false);
     final user = Provider.of<AuthService>(context, listen: false).usuario;
     if (user == null) return;
 
@@ -85,7 +83,7 @@ class _EditarPerfilPageState extends State<EditarPerfilPage> {
         _paisSelecionado!,
       );
 
-      Address _endereco = Address(
+      Address endereco = Address(
         _ruaController.text,
         _numeroController.text,
         _bairroController.text,
@@ -110,7 +108,8 @@ class _EditarPerfilPageState extends State<EditarPerfilPage> {
           cpf: cpfLimpo,
           celular: celularLimpo,
           genero: _genero!,
-          endereco: _endereco,
+          endereco: endereco,
+          url: old.url,
           role: old.role,
         );
         await Provider.of<Profileuserlist>(
@@ -135,11 +134,11 @@ class _EditarPerfilPageState extends State<EditarPerfilPage> {
           nome: _nameFormatter(_nomeController.text),
           category: _selectedCategor,
           cpf: cpfLimpo,
-          endereco: _endereco,
+          endereco: endereco,
           celular: celularLimpo,
           role: serv.role,
-          url: _standardUrl,
-          rating: 5.0,
+          url: serv.url,
+          rating: serv.rating,
         );
         await Provider.of<Servicerlist>(
           context,
@@ -576,6 +575,7 @@ class _EditarPerfilPageState extends State<EditarPerfilPage> {
                   validator: (v) => v == null ? 'Selecione uma opção' : null,
                 ),
               //SALVAR
+              SizedBox(height: 15),
               SizedBox(
                 width: double.infinity,
                 height: 50,
