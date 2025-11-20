@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ijob/Components/ordersFuture.dart';
 import 'package:ijob/Core/Entities/orderService.dart';
+import 'package:ijob/Core/services/export/excelOrder.dart';
+import 'package:ijob/Core/services/export/pdfOrder.dart';
 import 'package:ijob/Core/services/geralUse/profileUserList.dart';
 import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:ijob/Core/Entities/userRole.dart';
@@ -56,29 +58,11 @@ class _OrderspageState extends State<Orderspage> {
 
   @override
   Widget build(BuildContext context) {
+    final role = Provider.of<Userrole>(context, listen: false);
     _order = Provider.of<Orderservicer>(context).orders.reversed.toList();
 
-    if (_filtered) {
-      switch (_filter) {
-        case 0:
-          _order = _order.where((order) => order.status == 0).toList();
-          break;
-        case 1:
-          _order = _order.where((order) => order.status == 1).toList();
-          break;
-        case 2:
-          _order = _order.where((order) => order.status == 2).toList();
-          break;
-        case 3:
-          _order = _order.where((order) => order.status == 3).toList();
-          break;
-        case 4:
-          _order = _order.where((order) => order.status == 4).toList();
-          break;
-        default:
-          _order;
-          break;
-      }
+    if (_filtered && _filter != null) {
+      _order = _order.where((order) => order.status == _filter).toList();
     }
     // TODO: implement build
     return Scaffold(
@@ -87,7 +71,43 @@ class _OrderspageState extends State<Orderspage> {
           "Pedidos",
           style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
         ),
-        centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.ballot_outlined),
+            onSelected: (value) {
+              if (value == 'excel') {
+                Excelorder().excelExport(_order, context);
+              } else if (value == 'pdf') {
+                Pdforder().exportToPdf(_order, context);
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                if (role.isServicer)
+                  const PopupMenuItem<String>(
+                    value: 'excel',
+                    child: Row(
+                      children: [
+                        Icon(Icons.table_chart_outlined),
+                        SizedBox(width: 5),
+                        Text('Exportar para excel'),
+                      ],
+                    ),
+                  ),
+                const PopupMenuItem<String>(
+                  value: 'pdf',
+                  child: Row(
+                    children: [
+                      Icon(Icons.article),
+                      SizedBox(width: 5),
+                      Text('Exportar para pdf'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       drawer: !_filtered ? Sidebar() : null,
       body: ListView.builder(
