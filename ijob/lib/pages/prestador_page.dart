@@ -171,7 +171,7 @@ class Prestadorpage extends StatelessWidget {
                             }
                           : null,
                       label: Text(_address, overflow: TextOverflow.ellipsis),
-                      icon: Icon(Icons.add_location),
+                      icon: const Icon(Icons.room),
                     ),
                   ),
                 ],

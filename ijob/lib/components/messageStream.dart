@@ -35,7 +35,7 @@ class Messagestream extends StatelessWidget {
             itemCount: msgs.length,
             itemBuilder: (context, index) {
               return Messagebuble(
-                text: msgs[index].text,
+                msg: msgs[index],
                 belongs: msgs[index].userId == currentUser,
               );
             },
