@@ -179,6 +179,24 @@ class _DashboardpageState extends State<Dashboardpage> {
 
     final spots = _graphData(orders);
 
+    final currencyFormat = NumberFormat.currency(
+      locale: 'pt_BR',
+      symbol: 'R\$',
+    );
+
+    int valorTotal() {
+      return orders
+          .where(
+            (order) =>
+                order.status == 3 &&
+                order.finishedAt!.isAfter(
+                  DateTime.now().subtract(const Duration(days: 30)),
+                ),
+          )
+          .map((order) => order.value)
+          .fold(0, (x, y) => x + y);
+    }
+
     double _getCategorQuant(int index) {
       return orders
           .where(
@@ -210,6 +228,38 @@ class _DashboardpageState extends State<Dashboardpage> {
                           ),
                         );
                       }).toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Valor total estimado no mês: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          currencyFormat.format(valorTotal() / 100),
+                          style: const TextStyle(fontSize: 30),
+                        ),
+                      ],
                     ),
                   ),
                 ),
