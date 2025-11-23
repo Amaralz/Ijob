@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ijob/Core/Entities/profileUser.dart';
+import 'package:ijob/Core/utils/dbUtil.dart';
 
 class Profileuserlist extends ChangeNotifier {
   Profileuser? _profile;
@@ -49,6 +50,15 @@ class Profileuserlist extends ChangeNotifier {
       }
 
       await docRef.set(profileData.toJson());
+
+      Dbutil.insert('users', {
+        'id': uid,
+        'email': profileData.email,
+        'name': profileData.nome,
+        'categor1': null,
+        'categor2': null,
+        'role': 0,
+      });
       notifyListeners();
     } catch (e) {
       print(response);
@@ -71,7 +81,6 @@ class Profileuserlist extends ChangeNotifier {
 
       return profile;
     } catch (e) {
-      print("ERROOOOOOOOO");
       return null;
     }
   }
@@ -114,6 +123,7 @@ class Profileuserlist extends ChangeNotifier {
 
     try {
       await query.update(profiler.toJson());
+      Dbutil.delete('users', user.id!);
     } catch (error) {
       throw "Error ao tentar desativar conta";
     }
@@ -136,6 +146,10 @@ class Profileuserlist extends ChangeNotifier {
 
     try {
       await query.update(profiler.toJson());
+      Dbutil.update(user.id!, {
+        'email': user.email,
+        'name': user.nome,
+      }, 'users');
     } catch (error) {
       throw "Error ao tentar atualizar conta";
     }

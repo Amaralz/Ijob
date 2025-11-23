@@ -30,7 +30,8 @@ class topBarPrimaryPage extends StatelessWidget {
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(
-                        "https://pt.quizur.com/_image?href=https://img.quizur.com/f/img5f0c80e0bd9d08.31973740.jpg?lastEdited=1594654954&w=600&h=600&f=webp",
+                        user.url ??
+                            "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg",
                       ),
                     ),
                     title: Text(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ijob/Core/Entities/categor.dart';
 import 'package:ijob/Core/Entities/servicer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ijob/Core/utils/dbUtil.dart';
 
 class Servicerlist extends ChangeNotifier {
   final _db = FirebaseFirestore.instance.collection("users");
@@ -97,7 +98,6 @@ class Servicerlist extends ChangeNotifier {
 
       return serv;
     } catch (e) {
-      print("ERROOOOOOOOO");
       return null;
     }
   }
@@ -122,6 +122,17 @@ class Servicerlist extends ChangeNotifier {
       }
       await docRef.set(servicer.toJson());
       _servicers.add(servicer);
+
+      Dbutil.insert('users', {
+        'id': uid,
+        'email': servicer.email,
+        'name': servicer.nome,
+        'categor1': servicer.category![0],
+        'categor2': servicer.category!.length > 1
+            ? servicer.category![1]
+            : null,
+        'role': 1,
+      });
     } catch (e) {
       throw response;
     }
@@ -138,8 +149,9 @@ class Servicerlist extends ChangeNotifier {
 
     if (verify.docs.isNotEmpty) {
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   Future<void> deactivateServicer(Servicer serv) async {
@@ -161,6 +173,7 @@ class Servicerlist extends ChangeNotifier {
 
     try {
       await query.update(servicer.toJson());
+      Dbutil.delete('users', serv.id!);
     } catch (error) {
       throw "Erro ao tentar desativar servicer";
     }
@@ -184,6 +197,14 @@ class Servicerlist extends ChangeNotifier {
 
     try {
       await query.update(servicer.toJson());
+      Dbutil.update(serv.id!, {
+        'email': serv.email,
+        'name': serv.nome,
+        'categor1': serv.category![0],
+        'categor2': servicer.category!.length > 1
+            ? servicer.category![1]
+            : null,
+      }, 'users');
     } catch (error) {
       throw "Erro ao tentar atualizar servicer";
     }

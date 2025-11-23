@@ -72,18 +72,18 @@ class _OrderspageState extends State<Orderspage> {
           style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
         ),
         actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.ballot_outlined),
-            onSelected: (value) {
-              if (value == 'excel') {
-                Excelorder().excelExport(_order, context);
-              } else if (value == 'pdf') {
-                Pdforder().exportToPdf(_order, context);
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                if (role.isServicer)
+          if (role.isServicer)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.ballot_outlined),
+              onSelected: (value) {
+                if (value == 'excel') {
+                  Excelorder().excelExport(_order, context);
+                } else if (value == 'pdf') {
+                  Pdforder().exportToPdf(_order, context);
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
                   const PopupMenuItem<String>(
                     value: 'excel',
                     child: Row(
@@ -94,19 +94,19 @@ class _OrderspageState extends State<Orderspage> {
                       ],
                     ),
                   ),
-                const PopupMenuItem<String>(
-                  value: 'pdf',
-                  child: Row(
-                    children: [
-                      Icon(Icons.article),
-                      SizedBox(width: 5),
-                      Text('Exportar para pdf'),
-                    ],
+                  const PopupMenuItem<String>(
+                    value: 'pdf',
+                    child: Row(
+                      children: [
+                        Icon(Icons.article),
+                        SizedBox(width: 5),
+                        Text('Exportar para pdf'),
+                      ],
+                    ),
                   ),
-                ),
-              ];
-            },
-          ),
+                ];
+              },
+            ),
         ],
       ),
       drawer: !_filtered ? Sidebar() : null,
