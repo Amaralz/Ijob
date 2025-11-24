@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/components/categoryListServices.dart';
-import 'package:ijob/components/searchServicesBar.dart';
-import 'package:ijob/Entities/categor.dart';
+import 'package:ijob/Components/categoryListServices.dart';
+import 'package:ijob/Components/searchServicesBar.dart';
+import 'package:ijob/Core/Entities/categor.dart';
 
 class ServicosfiltradosPage extends StatefulWidget {
   @override
@@ -32,8 +32,10 @@ class _ServicosfiltradosPageState extends State<ServicosfiltradosPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(categoria.name.toString()),
-        backgroundColor: Colors.blue,
+        title: Text(
+          categoria.name.toString(),
+          style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),

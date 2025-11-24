@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
-import 'package:ijob/services/auth_services.dart';
+import 'package:ijob/Core/services/auth/authServices.dart';
 
 class CadastroComponent extends StatefulWidget {
   const CadastroComponent({super.key});
@@ -27,13 +27,14 @@ class _CadastroComponentState extends State<CadastroComponent> {
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            '/auth_check',
+            Routes.PERFIL,
             (route) => false,
           );
         }
       } catch (e) {
         if (mounted) {
           setState(() => loading = false);
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -56,7 +57,6 @@ class _CadastroComponentState extends State<CadastroComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('cadastro')),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -136,7 +136,7 @@ class _CadastroComponentState extends State<CadastroComponent> {
                   //Botão de voltar ao login
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.pushNamed(context, Routes.LOGIN);
                     },
                     child: const Text('Já tem conta? Faça login.'),
                   ),

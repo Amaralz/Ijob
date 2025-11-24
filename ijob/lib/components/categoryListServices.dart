@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/components/servicerListTile.dart';
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/Entities/servicer.dart';
-import 'package:ijob/Entities/servicerList.dart';
+import 'package:ijob/Components/servicerListTile.dart';
+import 'package:ijob/Core/Entities/categor.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
 import 'package:provider/provider.dart';
 
 class Categorylistservices extends StatelessWidget {
@@ -20,15 +20,19 @@ class Categorylistservices extends StatelessWidget {
         ? provider.searchServicerServicersByCategorie(category!, whatSearch!)
         : provider.servicersByCategorie(category!);
 
+    List<Servicer> trueServicers = servicers
+        .where((serv) => serv.active == true)
+        .toList();
+
     return Container(
       width: double.maxFinite,
 
       height: 300,
       child: ListView.builder(
         padding: const EdgeInsets.all(8),
-        itemCount: servicers.length,
+        itemCount: trueServicers.length,
         itemBuilder: (ctx, index) {
-          return Servicerlisttile(servicer: servicers[index]);
+          return Servicerlisttile(servicer: trueServicers[index]);
         },
       ),
     );

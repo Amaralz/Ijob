@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/components/searchServicesBar.dart';
-import 'package:ijob/components/ListServices.dart';
+import 'package:ijob/Components/searchServicesBar.dart';
+import 'package:ijob/Components/ListServices.dart';
 
 class ServicosPage extends StatefulWidget {
   @override

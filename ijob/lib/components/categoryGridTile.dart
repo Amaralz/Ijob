@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/Entities/categor.dart';
-import 'package:ijob/utils/icnoMap.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:ijob/Core/Entities/categor.dart';
+import 'package:ijob/Core/utils/icnoMap.dart';
+import 'package:ijob/Core/utils/routes.dart';
 
 class Categorygridtile extends StatelessWidget {
   final Categor? categoria;
@@ -27,7 +27,7 @@ class Categorygridtile extends StatelessWidget {
           context,
         ).pushNamed(Routes.SERVICOSFILTRADOS, arguments: categoria),
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(10),
           ),

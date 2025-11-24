@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/services/auth_services.dart';
-import 'package:ijob/services/database_helper.dart';
+import 'package:ijob/Core/Entities/profileUser.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
+import 'package:ijob/Core/Entities/userRole.dart';
+import 'package:ijob/Core/services/auth/authServices.dart';
+import 'package:ijob/Core/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget {
@@ -11,15 +16,28 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  String _nome = 'Carregando..';
-
-  Future<void> _carregarNome() async {
+  //
+  Future<String> _carregarNome(Userrole role) async {
     final user = Provider.of<AuthService>(context, listen: false).usuario;
-    if (user != null) {
-      final perfil = await DatabaseHelper().buscarPerfil(user.uid);
-      if (perfil != null && mounted) {
-        setState(() => _nome = perfil['nome']);
+    if (user == null) return "Visitante";
+    try {
+      if (role.isUsu) {
+        Profileuser? userName = await Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).getProfile(user.uid);
+        return userName?.nome ?? "Usuário";
+      } else if (role.isServicer) {
+        print(Provider.of<Userrole>(context, listen: false).isServicer);
+        Servicer? servicerName = await Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).getServicer(user.uid);
+        return servicerName?.nome ?? "Servidor";
       }
+      return "Usuário";
+    } catch (e) {
+      return "Error";
     }
   }
 
@@ -40,16 +58,19 @@ class _SidebarState extends State<Sidebar> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _carregarNome());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentRoute = ModalRoute.of(context)?.settings.name;
       setState(() {
-        if (currentRoute == '/homepage') {
+        if (currentRoute == Routes.HOME) {
           _selectedIndex = 0;
-        } else if (currentRoute == '/servicos') {
+        } else if (currentRoute == Routes.CONFIGURACOES) {
           _selectedIndex = 1;
-        } else if (currentRoute == '/notificacao') {
+        } else if (currentRoute == Routes.NOTIFICACOES) {
           _selectedIndex = 2;
+        } else if (currentRoute == Routes.ORDERS) {
+          _selectedIndex = 5;
+        } else if (currentRoute == Routes.DASHBOARD) {
+          _selectedIndex = 3;
         }
       });
     });
@@ -57,22 +78,37 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   Widget build(BuildContext context) {
+    final role = Provider.of<Userrole>(context);
+    final auth = Provider.of<AuthService>(context);
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            accountName: Text(
-              _nome,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            accountEmail: Text(
-              Provider.of<AuthService>(context).usuario?.email ?? '',
-            ),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.person, size: 40, color: Colors.blue),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamed(Routes.EDIT),
+            child: UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              accountName: FutureBuilder<String>(
+                future: _carregarNome(role),
+                builder: (context, snapshot) {
+                  String name = "";
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    name = snapshot.data ?? "Usuário";
+                  }
+                  if (snapshot.hasError) {
+                    name = "Erro ao carregar";
+                  }
+                  return Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  );
+                },
+              ),
+              accountEmail: Text(auth.usuario?.email ?? ''),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, size: 40, color: Colors.blue),
+              ),
             ),
           ),
 
@@ -82,29 +118,40 @@ class _SidebarState extends State<Sidebar> {
             title: const Text("Home"),
             selected: _selectedIndex == 0,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 0, '/homepage'),
+            onTap: () => _navigateAndSelect(
+              context,
+              0,
+              role.isUsu ? Routes.HOME : Routes.SERVICERHOME,
+            ),
           ),
 
-          //botão serviços
+          //botão configuração
           ListTile(
-            leading: const Icon(Icons.build),
-            title: const Text('serviços'),
+            leading: const Icon(Icons.settings),
+            title: const Text('Configurações'),
             selected: _selectedIndex == 1,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 1, '/servicos'),
+            onTap: () => _navigateAndSelect(context, 1, Routes.CONFIGURACOES),
           ),
 
           //botão notificação
-          ListTile(
+          /*ListTile(
             leading: const Icon(Icons.add_alert),
             title: const Text('notificações'),
             selected: _selectedIndex == 2,
             selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-            onTap: () => _navigateAndSelect(context, 2, '/notificacao'),
+            onTap: () => _navigateAndSelect(context, 2, Routes.NOTIFICACOES),
+          ),*/
+          ListTile(
+            leading: const Icon(Icons.view_timeline_outlined),
+            title: const Text('Pedidos'),
+            selected: _selectedIndex == 5,
+            selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
+            onTap: () => _navigateAndSelect(context, 5, Routes.ORDERS),
           ),
 
           // Expansion Item (adicionado após o último ListTile)
-          ExpansionTile(
+          /*  ExpansionTile(
             leading: const Icon(Icons.filter_b_and_w_outlined),
             title: const Text('Mais'),
             onExpansionChanged: (expanded) {
@@ -118,13 +165,7 @@ class _SidebarState extends State<Sidebar> {
                 title: const Text('Dashboard'),
                 selected: _selectedIndex == 3,
                 selectedTileColor: Color.fromRGBO(0, 0, 255, 0.1),
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = 3;
-                  });
-                  Navigator.pop(context);
-                  print('Expansion Item 1 tapped');
-                },
+                onTap: () => _navigateAndSelect(context, 3, Routes.DASHBOARD),
               ),
 
               // Subitem 2
@@ -142,12 +183,18 @@ class _SidebarState extends State<Sidebar> {
                 },
               ),
             ],
-          ),
+          ),*/
+          Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: OutlinedButton(
               onPressed: () async {
                 await Provider.of<AuthService>(context, listen: false).logout();
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  Routes.LOGIN,
+                  (previousRoutes) => false,
+                );
               },
               style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
               child: Row(

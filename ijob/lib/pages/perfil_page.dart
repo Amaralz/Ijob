@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:ijob/services/auth_services.dart';
-import 'package:ijob/services/database_helper.dart';
-import 'package:ijob/utils/routes.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ijob/Core/Entities/address.dart';
+import 'package:ijob/Core/services/geralUse/categorList.dart';
+import 'package:ijob/Core/Entities/profileUser.dart';
+import 'package:ijob/Core/services/geralUse/profileUserList.dart';
+import 'package:ijob/Core/Entities/servicer.dart';
+import 'package:ijob/Core/services/geralUse/servicerList.dart';
+import 'package:ijob/Core/data/addressData.dart';
+import 'package:ijob/Core/services/auth/authServices.dart';
+import 'package:ijob/Core/utils/locationUtil.dart';
+import 'package:ijob/Core/utils/routes.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({super.key});
@@ -17,48 +25,26 @@ class _PerfilPageState extends State<PerfilPage> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _cpfController = TextEditingController();
+  final _cidadeController = TextEditingController();
+  final _bairroController = TextEditingController();
+  final _celularcontroller = TextEditingController();
   final _ruaController = TextEditingController();
   final _numeroController = TextEditingController();
-  final _celularcontroller = TextEditingController();
-  final _bairroController = TextEditingController();
-  final _cidadeController = TextEditingController();
   String? _genero;
-  String? _role;
   String? _paisSelecionado;
   String? _estadoSelecionado;
+  String? _role;
+  String? _categor;
+  String? _categorSecond;
+  List<String> _selectedCategor = [];
+  String _standardUrl =
+      "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg";
+
+  final _paises = paises;
+  final _estadoPorPais = estadoPorPais;
 
   bool _loading = false;
-
-  final List<Map<String, String>> _paises = [
-    {'nome': 'Brasil', 'codigo': 'BR'},
-    {'nome': 'Argentina', 'codigo': 'AR'},
-    {'nome': 'Estados Unidos', 'codigo': 'US'},
-    {'nome': 'México', 'codigo': 'MX'},
-    {'nome': 'Chile', 'codigo': 'CL'},
-    {'nome': 'Colômbia', 'codigo': 'CO'},
-  ];
-
-  final Map<String, List<String>> _estadoPorPais = {
-    'BR': ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia', 'Paraná'],
-  };
-
-  Future<bool> _verificarCpfUnico(String cpf) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('cpf', isEqualTo: cpf)
-        .limit(1)
-        .get();
-    return snapshot.docs.isEmpty;
-  }
-
-  Future<bool> _verificarCelularUnico(String celular) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('celular', isEqualTo: celular)
-        .limit(1)
-        .get();
-    return snapshot.docs.isEmpty;
-  }
+  bool _locLoading = false;
 
   final cpfFormatter = MaskTextInputFormatter(
     mask: '###.###.###.##',
@@ -70,62 +56,84 @@ class _PerfilPageState extends State<PerfilPage> {
     filter: {"#": RegExp(r'[0-9]')},
   );
 
+  String _nameFormatter(String string) {
+    return string.substring(0, 1).toUpperCase() +
+        string.substring(1).toLowerCase();
+  }
+
   Future<void> _salvarPerfil() async {
-    final cpfLimpo = _cpfController.text.replaceAll(RegExp(r'\D'), '');
-    final celularLimpo = _celularcontroller.text.replaceAll(RegExp(r'\D'), '');
-
-    if (await DatabaseHelper().cpfExiste(cpfLimpo)) {
-      _showError('CPF já cadastrado localmente!');
-      return;
-    }
-
-    if (!(await _verificarCpfUnico(cpfLimpo))) {
-      _showError('CPF já existe em outra conta!');
-      return;
-    }
-
-    if (await DatabaseHelper().celularExiste(celularLimpo)) {
-      _showError('Celular já cadastrado localmente!');
-      return;
-    }
-
-    if (!(await _verificarCelularUnico(celularLimpo))) {
-      _showError('Celular já existe em outra conta!');
-      return;
-    }
-
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
 
     final user = Provider.of<AuthService>(context, listen: false).usuario;
     if (user == null) return;
-
-    //Salvar no SQFLITE (localmente)
-    final perfilLocal = {
-      'id': user.uid,
-      'nome': _nomeController.text.trim(),
-      'cpf': cpfLimpo,
-      'rua': _ruaController.text.trim(),
-      'numero': _numeroController.text.trim(),
-      'bairro': _bairroController.text.trim(),
-      'cidade': _cidadeController.text.trim(),
-      'estado': _estadoSelecionado ?? '',
-      'pais': _paisSelecionado ?? '',
-      'celular': celularLimpo,
-      'genero': _genero!,
-    };
+    int decider = int.parse(_role!);
 
     try {
-      //Salvar no SQFLITE (localmente)
-      await DatabaseHelper().inserirPerfil(perfilLocal);
+      LatLng location = await Locationutil.getLatLngFromAdress(
+        _ruaController.text,
+        _numeroController.text,
+        _bairroController.text,
+        _cidadeController.text,
+        _estadoSelecionado!,
+        _paisSelecionado!,
+      );
 
-      //Salvar no FIRESTORE (Nuvem)
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set(perfilLocal, SetOptions(merge: true));
-      //redireciona para authcheck
+      Address endereco = Address(
+        _ruaController.text,
+        _numeroController.text,
+        _bairroController.text,
+        _cidadeController.text,
+        _estadoSelecionado!,
+        _paisSelecionado!,
+        location.latitude,
+        location.longitude,
+      );
+
+      if (decider == 0) {
+        //Usuario
+        final usuario = Profileuser(
+          id: user.uid,
+          email: user.email,
+          nome: _nameFormatter(_nomeController.text),
+          cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
+          celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
+          genero: _genero!,
+          endereco: endereco,
+          url: _standardUrl,
+          role: decider,
+        );
+
+        await Provider.of<Profileuserlist>(
+          context,
+          listen: false,
+        ).createUserProfile(user, usuario);
+      } else if (decider == 1) {
+        _selectedCategor.clear();
+        _selectedCategor.add(_categor!);
+        _selectedCategor.add(_categorSecond!);
+        //prestador
+        final servicer = Servicer(
+          id: user.uid,
+          email: user.email,
+          nome: _nameFormatter(_nomeController.text),
+          category: _selectedCategor,
+          cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
+          endereco: endereco,
+          celular: _celularcontroller.text.replaceAll(RegExp(r'\D'), ''),
+          role: decider,
+          url: _standardUrl,
+          rating: 5.0,
+        );
+        await Provider.of<Servicerlist>(
+          context,
+          listen: false,
+        ).createServicer(user, servicer);
+      } else {
+        setState(() => _loading = false);
+        return;
+      }
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -134,27 +142,28 @@ class _PerfilPageState extends State<PerfilPage> {
         );
       }
     } catch (e) {
-      _showError('Erro ao salvar perfil: $e');
-    } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Falha ao salvar dados")));
+      }
     }
   }
 
-  void _showError(String msg) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-      setState(() => _loading = false);
-    }
+  @override
+  void initState() {
+    Provider.of<Categorlist>(context, listen: false).loadCategors();
+    super.initState();
   }
 
   @override
   void dispose() {
     _nomeController.dispose();
     _cpfController.dispose();
-    _ruaController.dispose();
-    _cidadeController.dispose();
     _bairroController.dispose();
-    _numeroController.dispose();
     _celularcontroller.dispose();
     super.dispose();
   }
@@ -162,30 +171,7 @@ class _PerfilPageState extends State<PerfilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Completar Perfil'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              await Provider.of<AuthService>(context, listen: false).logout();
-              if (mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  Routes.LOGIN,
-                  (route) => false,
-                );
-              }
-            },
-            child: Text(
-              'voltar ao login',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Completar Perfil')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -198,7 +184,8 @@ class _PerfilPageState extends State<PerfilPage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              //NOME
+
+              //nome
               TextFormField(
                 controller: _nomeController,
                 decoration: const InputDecoration(
@@ -208,7 +195,8 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
               ),
               const SizedBox(height: 16),
-              //CPF
+
+              //cpf
               TextFormField(
                 controller: _cpfController,
                 decoration: const InputDecoration(
@@ -224,9 +212,71 @@ class _PerfilPageState extends State<PerfilPage> {
                 },
               ),
               const SizedBox(height: 16),
+
+              _locLoading
+                  ? CircularProgressIndicator()
+                  : TextButton.icon(
+                      onPressed: () async {
+                        setState(() {
+                          _locLoading = true;
+                        });
+                        try {
+                          final position = await Location().getLocation();
+
+                          if (position.latitude == null ||
+                              position.longitude == null) {
+                            throw 'Erro ao tentar conseguir posição';
+                          }
+
+                          final address = await Locationutil()
+                              .getAdressFromLatLng(
+                                LatLng(position.latitude!, position.longitude!),
+                              );
+
+                          if (address == null) {
+                            throw 'Erro ao tentar conseguir endereço';
+                          }
+                          String? paisCod;
+                          try {
+                            final paisMap = _paises.firstWhere(
+                              (pais) => pais['nome'] == address.country,
+                            );
+                            paisCod = paisMap['codigo'];
+                          } catch (erro) {
+                            throw 'País não suportado';
+                          }
+
+                          setState(() {
+                            _ruaController.text = address.route;
+                            _numeroController.text = address.number;
+                            _bairroController.text = address.neighborhood;
+                            _cidadeController.text = address.locality;
+                            _paisSelecionado = paisCod;
+                            _estadoSelecionado = address.state;
+                          });
+                        } catch (erro) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Erro: ${erro.toString()} '),
+                            ),
+                          );
+                        } finally {
+                          if (mounted) {
+                            setState(() {
+                              _locLoading = false;
+                            });
+                          }
+                        }
+                      },
+                      label: Text("Selecionar localização atual"),
+                      icon: Icon(Icons.add_location),
+                    ),
+
+              const SizedBox(height: 16),
+
               //PAÍS
               DropdownButtonFormField(
-                value: _paisSelecionado,
+                initialValue: _paisSelecionado,
                 decoration: const InputDecoration(
                   labelText: 'pais',
                   border: OutlineInputBorder(),
@@ -245,9 +295,10 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v == null ? 'Obrigatório' : null,
               ),
               const SizedBox(height: 16),
-              //CIDADE
+
+              //ESTADO
               DropdownButtonFormField<String>(
-                value: _estadoSelecionado,
+                initialValue: _estadoSelecionado,
                 decoration: const InputDecoration(
                   labelText: 'Estado',
                   border: OutlineInputBorder(),
@@ -264,6 +315,18 @@ class _PerfilPageState extends State<PerfilPage> {
                     : null,
               ),
               const SizedBox(height: 16),
+
+              //Cidade
+              TextFormField(
+                controller: _cidadeController,
+                decoration: const InputDecoration(
+                  labelText: 'Cidade',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => v!.trim().isEmpty ? 'Obrigatório' : null,
+              ),
+              const SizedBox(height: 16),
+
               //BAIRRO
               TextFormField(
                 controller: _bairroController,
@@ -274,6 +337,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
               ),
               const SizedBox(height: 16),
+
               //RUA
               TextFormField(
                 controller: _ruaController,
@@ -294,8 +358,9 @@ class _PerfilPageState extends State<PerfilPage> {
                 keyboardType: TextInputType.number,
                 validator: (v) => v!.trim().isEmpty ? 'Obrigatorio' : null,
               ),
-              const SizedBox(height: 16),
+
               //CELULAR
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _celularcontroller,
                 decoration: const InputDecoration(
@@ -310,10 +375,11 @@ class _PerfilPageState extends State<PerfilPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+
               //GENERO
+              const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _genero,
+                initialValue: _genero,
                 decoration: const InputDecoration(
                   labelText: 'Gênero',
                   border: OutlineInputBorder(),
@@ -324,23 +390,72 @@ class _PerfilPageState extends State<PerfilPage> {
                 onChanged: (v) => setState(() => _genero = v),
                 validator: (v) => v == null ? 'Selecione um gênero' : null,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 30),
+
               //ROLE
               DropdownButtonFormField<String>(
-                value: _role,
+                initialValue: _role,
                 decoration: const InputDecoration(
                   labelText: 'tipo de conta',
                   border: OutlineInputBorder(),
                 ),
                 items: [
-                  DropdownMenuItem(value: 'user', child: Text('Cliente')),
-                  DropdownMenuItem(value: 'provider', child: Text('prestador')),
+                  DropdownMenuItem(value: '0', child: Text('Cliente')),
+                  DropdownMenuItem(value: '1', child: Text('Prestador')),
                 ],
                 onChanged: (v) => setState(() => _role = v),
                 validator: (v) => v == null ? 'Selecione uma opção' : null,
               ),
-
-              const SizedBox(height: 30),
+              const SizedBox(height: 16),
+              if (_role == "1")
+                //CATEGOR
+                DropdownButtonFormField<String>(
+                  initialValue: _categor,
+                  decoration: const InputDecoration(
+                    labelText: 'Categorias Prestadas',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: Provider.of<Categorlist>(context, listen: false)
+                      .categories
+                      .map(
+                        (cat) => DropdownMenuItem(
+                          value: cat.id,
+                          child: Text(cat.name!),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() {
+                    _categor = v;
+                    if (v != null) {
+                      _selectedCategor.add(v);
+                    }
+                  }),
+                  validator: (v) => v == null ? 'Selecione uma opção' : null,
+                ),
+              const SizedBox(height: 16),
+              if (_role == "1" && _selectedCategor.length > 0)
+                //CATEGOR
+                DropdownButtonFormField<String>(
+                  initialValue: _categorSecond,
+                  decoration: const InputDecoration(
+                    labelText: 'Categorias Prestadas',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: Provider.of<Categorlist>(context, listen: false)
+                      .categories
+                      .map(
+                        (cat) => DropdownMenuItem(
+                          value: cat.id,
+                          child: Text(cat.name!),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() {
+                    _categorSecond = v;
+                  }),
+                  validator: (v) => v == null ? 'Selecione uma opção' : null,
+                ),
+              const SizedBox(height: 16),
 
               SizedBox(
                 width: double.infinity,
